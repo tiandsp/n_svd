@@ -26,9 +26,9 @@ Size_Vec size(vector< vector<double> > M)	//·µ»ØÒ»¸ö¶þÎ¬vectorÐÐÓëÁÐµÄ´óÐ¡
 {
 	Size_Vec s;
 	vector< vector<double> >::iterator p;
-	s.r=M.size();
-	p=M.begin();
-	s.c=p->size();
+	s.r = M.size();
+	p = M.begin();
+	s.c = p -> size();
 
 	return s;
 }
@@ -40,36 +40,35 @@ double *vector2matrix(vector< vector<double> > M)  //½«¶þÎ¬µÄvector×ª»»Îª¶þÎ¬µÄÊ
 	vector<double>::iterator pp_M;
 
 	double *m;
-	double r,c;
+	double r, c;
 
-	r=M.size();
-	p_M=M.begin();
-	c=p_M->size();
-	m=new double[long(r*c)];
+	r = M.size();
+	p_M = M.begin();
+	c = p_M -> size();
+	m = new double[long(r * c)];
 
-	double i,j;
-	for (i=0,p_M=M.begin();p_M!=M.end();i++,p_M++)
+	double i, j;
+	for (i = 0, p_M = M.begin(); p_M != M.end(); i++, p_M++)
 	{
-		for (j=0,pp_M=p_M->begin();pp_M!=p_M->end();j++,pp_M++)
+		for (j = 0, pp_M = p_M -> begin(); pp_M != p_M -> end(); j++, pp_M++)
 		{
-			m[long(i*c+j)]=*pp_M;
+			m[long(i * c + j)] = *pp_M;
 		}
 	}
 
 	return m;
-
 }
 
-vector< vector<double> > matrix2vector(double *m,double r,double c)  //½«¶þÎ¬µÄÊý×é×ª»»Îª¶þÎ¬µÄvector
+vector< vector<double> > matrix2vector(double *m, double r, double c)  //½«¶þÎ¬µÄÊý×é×ª»»Îª¶þÎ¬µÄvector
 {
 	vector< vector<double> > M;
 	vector<double> data;
 
-	for (double i=0;i<r;i++)
+	for (double i = 0; i < r; i++)
 	{
-		for (double j=0;j<c;j++)
+		for (double j = 0; j < c; j++)
 		{
-			data.push_back(m[long(i*c+j)]);
+			data.push_back(m[long(i * c + j)]);
 		}
 		M.push_back(data);
 		data.clear();
@@ -81,30 +80,80 @@ vector< vector<double> > matrix2vector(double *m,double r,double c)  //½«¶þÎ¬µÄÊ
 double *inv(vector< vector<double> > s)
 {
 	double *re;
+	double *data;
+	Size_Vec size_s;
+	size_s = size(s);
 
+	re = new double[long(size_s.r * size_s.c)];
+	data = new double[long(size_s.r * size_s.c)];
+	data = vector2matrix(s);
+
+
+
+
+
+	delete[] data;
 	return re;
 }
 
-vector< vector<double> > shiftdim(vector< vector<double> > tensor,double n)
+void reverse_vec(vector< vector<double> > tensor, double p, double q)
+{
+	vector<double> tmp;
+	while(p < q)
+	{
+		tmp = tensor.at(p);
+		tensor.at(p) = tensor.at(q);
+		tensor.at(q) = tmp;
+		p++;
+		q--;
+	}
+}
+
+vector< vector<double> > shiftdim(vector< vector<double> > tensor, double n)		//Ê¹Õâ¸öÕÅÁ¿Òª·Ö½âµÄÄÇÒ»Î¬´¦ÓÚµÚÒ»Î¬
+{
+	double len;
+	len = tensor.size();
+	
+	reverse_vec(tensor, 0, len-n-1);			//Ò»¸öÐ¡µÄ±ä»»¼¼ÇÉ£¬Ïê¼û±à³ÌÖéçá»ò±à³ÌÖ®ÃÀ
+	reverse_vec(tensor, len-n, len-1);
+	reverse_vec(tensor, 0, len-1);
+
+	return tensor;
+}
+
+vector< vector<double> > reshape(vector< vector<double> > tensor, double r, double c)	//½«¶àÎ¬µÄtensor½µÎª¶þÎ¬µÄ
 {
 	vector< vector<double> > re;
-	vector< vector<double> >::iterator p_re;
-	vector<double>::iterator pp_re;
+	vector< vector<double> >::iterator p_tensor;
+	vector<double>::iterator pp_tensor;
+	vector<double> tmp;
 	vector<double> data;
+	vector<double>::iterator p_tmp;
 
+	for (p_tensor = tensor.begin(); p_tensor != tensor.end(); p_tensor++)
+	{
+		for (pp_tensor = p_tensor->begin(); pp_tensor != p_tensor->end(); pp_tensor++)
+		{
+			tmp.push_back(*pp_tensor);
+		}
+	}
 
+	p_tmp = tmp.begin();
+	for (double i = 0; i < r; i++)
+	{
+		for (double j = 0; j < c; j++)
+		{
+			data.push_back(*p_tmp);
+			p_tmp++;
+		}
+		re.push_back(data);
+		data.clear();
+	}
 	return re;
+
 }
 
-vector< vector<double> > reshape(vector< vector<double> > tensor,double r, double c)
-{
-	vector< vector<double> > re;
-
-	return re;
-
-}
-
-vector< vector<double> > matricize(vector< vector<double> > tensor,double n)
+vector< vector<double> > matricize(vector< vector<double> > tensor, double n)
 {
 
 	double ss;		//ÕÅÁ¿tensorÖÐµÚnÎ¬µÄ´óÐ¡
@@ -117,51 +166,29 @@ vector< vector<double> > matricize(vector< vector<double> > tensor,double n)
 	vector< vector<double> > re_tensor;	//·µ»ØµÄ½á¹û£¬ÕâÀïÊÇ¸ö¶þÎ¬¾ØÕó
 	vector<double> tmp;
 
-	for (p_tensor=tensor.begin();p_tensor!=tensor.end();p_tensor++)
+	for (p_tensor = tensor.begin(); p_tensor != tensor.end(); p_tensor++)
 	{
-		s.push_back(p_tensor->size());		//µÃµ½tensorÃ¿Ò»Î¬µÄ´óÐ¡
+		s.push_back(p_tensor -> size());		//µÃµ½tensorÃ¿Ò»Î¬µÄ´óÐ¡
 	}
 
-	p_tensor=tensor.begin()+n;	//Ö¸ÏòtensorÕ¹¿ªÖÐ±£³Ö²»±äµÄÄÇÒ»Î¬
-	ss=p_tensor->size();		//ËùÖ¸ÏòÎ¬ÊýµÄ´óÐ¡
+	p_tensor = tensor.begin() + n;	//Ö¸ÏòtensorÕ¹¿ªÖÐ±£³Ö²»±äµÄÄÇÒ»Î¬
+	ss = p_tensor -> size();		//ËùÖ¸ÏòÎ¬ÊýµÄ´óÐ¡
 
-	dim=1;				//tensorÖÐËùÓÐÎ¬ÊýµÄ´óÐ¡µÄ³Ë»ý
-	for (p_s=s.begin();p_s!=s.end();p_s++)
+	dim = 1;				//tensorÖÐËùÓÐÎ¬ÊýµÄ´óÐ¡µÄ³Ë»ý
+	for (p_s = s.begin(); p_s != s.end(); p_s++)
 	{
 		dim *= (*p_s);
 	}
 
 
-	shift_tensor=shiftdim(tensor,n-1);
-	re_tensor=reshape(shift_tensor,ss,dim/ss);
+	shift_tensor = shiftdim(tensor, n);
+	re_tensor = reshape(shift_tensor, ss, dim / ss);
 
-	/*
-	for (p_tensor=tensor.begin();p_tensor!=tensor.end();p_tensor++)
-	{
-		for (p_s=p_tensor->begin();p_s!=p_tensor->end();p_s++)
-		{
-			tmp.push_back(*p_s);
-		}
-	}
-
-	p_s=tmp.begin();
-	s.clear();
-	for (double i=0;i<ss;i++)
-	{
-		for (double j=0;j<dim/ss;j++)
-		{
-			s.push_back(*p_s);
-			p_s++;
-		}
-		re_tensor.push_back(s);
-		s.clear();
-	}
-	*/
 	return re_tensor;
 
 }
 
-SVD_Data svd(vector< vector<double> > M,int n)
+SVD_Data svd(vector< vector<double> > M, int n)
 {
 
 }
@@ -173,19 +200,19 @@ SVD_Data svd(vector< vector<double> > M)
 
 
 
-double *mat_multiplier(double *a,double *b,double a_r,double a_c,double b_r,double b_c)
+double *mat_multiplier(double *a, double *b, double a_r, double a_c, double b_r, double b_c)
 {
 	double *c;
-	c=new double[long(a_r*b_c)];
-	memset(c,0,a_r*b_c*sizeof(double));
+	c=new double[long(a_r * b_c)];
+	memset(c, 0, a_r * b_c * sizeof(double));
 
-	for (double i=0;i<a_r;i++)
+	for (double i = 0; i < a_r; i++)
 	{
-		for (double j=0;j<a_c;j++)
+		for (double j = 0; j < a_c; j++)
 		{
-			for (double k=0;k<b_c;k++)
+			for (double k = 0; k < b_c; k++)
 			{
-				c[long(i*b_c+k)]=c[long(i*b_c+k)]+a[long(i*a_c+j)]*b[long(j*b_c+k)];
+				c[long(i * b_c + k)] = c[long(i * b_c + k)] + a[long(i * a_c + j)] * b[long(j * b_c + k)];
 			}
 		}
 	}
@@ -194,20 +221,20 @@ double *mat_multiplier(double *a,double *b,double a_r,double a_c,double b_r,doub
 
 
 
-vector< vector<double> > vec_multiplier(double *a,double*b,double a_r,double a_c,double b_r,double b_c)
+vector< vector<double> > vec_multiplier(double *a, double*b, double a_r, double a_c, double b_r, double b_c)
 {
 	vector< vector<double> > re;
 	double *c;
-	c=new double[long(a_r*b_c)];
+	c = new double[long(a_r * b_c)];
 
-	c=mat_multiplier(a,b,a_r,a_c,b_r,b_c);
-	re=matrix2vector(c,a_r,b_c);
+	c = mat_multiplier(a, b, a_r, a_c, b_r, b_c);
+	re = matrix2vector(c, a_r, b_c);
 	delete[] c;
 
 	return re;
 }
 
-vector< vector<double> > abs_sqrt_dot(vector< vector<double> > a,vector< vector<double> > b)
+vector< vector<double> > abs_sqrt_dot(vector< vector<double> > a, vector< vector<double> > b)
 {
 	vector< vector<double> > re;
 	vector<double> data;
@@ -216,13 +243,13 @@ vector< vector<double> > abs_sqrt_dot(vector< vector<double> > a,vector< vector<
 	vector<double>::iterator pp_a;
 	vector<double>::iterator pp_b;
 
-	for (p_a=a.begin(),p_b=b.begin();
-		p_a!=a.end(),p_b!=b.end();p_a++,p_b++)
+	for (p_a = a.begin(), p_b = b.begin();
+		p_a != a.end(), p_b != b.end(); p_a++, p_b++)
 	{
-		for (pp_a=p_a->begin(),pp_b=p_b->begin();
-			pp_a!=p_a->end(),pp_b!=p_b->end();pp_a++,pp_b++)
+		for (pp_a = p_a -> begin(), pp_b = p_b -> begin();
+			pp_a != p_a -> end(), pp_b != p_b -> end(); pp_a++,pp_b++)
 		{
-			data.push_back(abs(sqrt((*pp_a)*(*pp_b))));
+			data.push_back(abs(sqrt((*pp_a) * (*pp_b))));
 		}
 		re.push_back(data);
 		data.clear();
@@ -234,93 +261,89 @@ vector< vector<double> > tfastsvd(vector< vector<double> > M)
 {
 	vector< vector<double> >::iterator p_M;
 	vector<double>::iterator pp_M;
-	vector< vector<double> > M2;
+
 	SVD_Data re_svd;
-	double r,c;
+	Size_Vec size_M;
 	double u;
 
-	r=M.size();
-	p_M=M.begin();
-	c=p_M->size();
+	size_M = size(M);
 
-	if (r==1)
+	if (size_M.r == 1)
 	{
-		u=1;
-		re_svd=svd(M,0);
+		u = 1;
+		re_svd = svd(M, 0);
 	}
-	else if (r<c)
+	else if (size_M.r < size_M.c)
 	{
+		vector< vector<double> > M2;
 		double *m1;
 		double *m2;
-		m1=new double[long(r*c)];
-		m2=new double[long(c*r)];
+		m1 = new double[long(size_M.r * size_M.c)];
+		m2 = new double[long(size_M.c * size_M.r)];
 
-		m1=vector2matrix(M);
-		for (double j=0;j<c;j++)
+		m1 = vector2matrix(M);
+		for (double j = 0; j < size_M.c; j++)
 		{
-			for (double i=0;i<r;i++)
+			for (double i = 0; i < size_M.r; i++)
 			{
-				m2[long(j*r+i)]=m1[long(i*c+j)];
+				m2[long(j * size_M.r + i)] = m1[long(i * size_M.c + j)];
 			}
 		}
 
-		M2=vec_multiplier(m1,m2,r,c,c,r);
+		M2 = vec_multiplier(m1, m2, size_M.r, size_M.c, size_M.c, size_M.r);
 		delete[] m1;
 		delete[] m2;
 
 		re_svd=svd(M2);
 	}
-	else if (c==1)
+	else if (size_M.c == 1)
 	{
 		vector< vector<double> > tmp_m;
 		vector<double> data;
 		data.push_back(1);
 		re_svd.v.push_back(data);
 
-		tmp_m=abs_sqrt_dot(M,M);
-		re_svd.s=tmp_m;
+		tmp_m = abs_sqrt_dot(M, M);
+		re_svd.s = tmp_m;
 
 		double *m;
 		double *v;
 		double *s;
 		double *u;
-		m=new double[long(r*c)];
-		v=new double;
-		s=new double[long(r*c)];
-		u=new double[long()];
-		m=vector2matrix(M);
-		v=vector2matrix(re_svd.v);
-		s=inv(re_svd.s);
-
-
-
-		re_svd=svd(M,0);
+		m = new double[long(size_M.r * size_M.c)];
+		v = new double;
+		s = new double[long(size_M.r * size_M.c)];
+		u = new double[long()];
+		m = vector2matrix(M);
+		v = vector2matrix(re_svd.v);
+		s = inv(re_svd.s);
+		re_svd = svd(M, 0);
 
 		delete[] m;
 		delete v;
 		delete[] s;
 		delete[] u;
 	}
-	else if (c<r)
+	else if (size_M.c < size_M.r)
 	{
 
 	}
 	else
 	{
-		re_svd=svd(M,0);
+		re_svd = svd(M, 0);
 	}
 	return re_svd.u;
 
 }
 
-vector< vector<double> > mode_m_prod(vector< vector<double> > cdata,double *u,double i,int flag)
+vector< vector<double> > mode_m_prod(vector< vector<double> > cdata, double *u, double i, int flag)
 {
 
 
 }
 
 
-Data m_mode_svd(vector< vector<double> > dtensor,vector<double> modes)
+Data m_mode_svd(vector< vector<double> > dtensor, vector<double> modes)
 {
 	Data re;			//º¯Êý·µ»ØµÄ½á¹û£¬½á¹¹Ìå
 	vector<double> d;	//detnsorÕÅÁ¿Ã¿Ò»Î¬µÄ´óÐ¡
@@ -330,12 +353,12 @@ Data m_mode_svd(vector< vector<double> > dtensor,vector<double> modes)
 	vector< vector<double> > cdata;		//dtensorµÄÒ»¸ö¸±±¾£¬Ö÷Òª¶ÔËû½øÐÐ´¦Àí
 
 
-	for (pit_dtensor=dtensor.begin();pit_dtensor!=dtensor.end();pit_dtensor++)	//Í³¼ÆdtensorÃ¿Ò»Î¬µÄ´óÐ¡£¬´æÈëdÖÐ	
+	for (pit_dtensor = dtensor.begin(); pit_dtensor != dtensor.end(); pit_dtensor++)	//Í³¼ÆdtensorÃ¿Ò»Î¬µÄ´óÐ¡£¬´æÈëdÖÐ	
 	{
-		d.push_back(pit_dtensor->size());		
+		d.push_back(pit_dtensor -> size());		
 	}
 
-	cdata=dtensor;
+	cdata = dtensor;
 	vector< vector<double> > M;		//°´dtensorÖÐµÚiÎ¬Õ¹¿ªºóµÄ½á¹û£¬ÊÇÒ»¸ö¶þÎ¬Êý×é
 	Size_Vec size_M;		//MÐÐÓëÁÐ·Ö±ðµÄ´óÐ¡
 	vector< vector<double> >::iterator p_M;		//¶ÔMµÄÁÐ½øÐÐµü´úµÄµü´úÆ÷
@@ -343,69 +366,58 @@ Data m_mode_svd(vector< vector<double> > dtensor,vector<double> modes)
 	vector< vector<double> > u;					//ÏàÓ¦µÄ°´µÚiÎ¬Õ¹¿ªºóµÄÌØÕ÷£¬ÊÇÒ»¸ö¶þÎ¬Êý×é
 	double i;								//ÓÃÀ´¸ú×ÙdµÄÃ¿¸öÖµ
 
-	for (i=0,p_modes=modes.begin();p_modes!=modes.end();i++,p_modes++)
+	for (i = 0, p_modes = modes.begin(); p_modes != modes.end(); i++, p_modes++)
 	{
-		M=matricize(cdata,*p_modes);		//¶ÔcdataÕÅÁ¿°´ÆäµÚiÎ¬Õ¹¿ª£¬±ÈÈçcdataÎª£¨3,4,5,3,2£©µÄÕÅÁ¿£¬°´µÚÈýÎ¬Õ¹¿ªM¾ÍÊÇ£¨5,72£©µÄ¾ØÕó
+		M = matricize(cdata, *p_modes);		//¶ÔcdataÕÅÁ¿°´ÆäµÚiÎ¬Õ¹¿ª£¬±ÈÈçcdataÎª£¨3,4,5,3,2£©µÄÕÅÁ¿£¬°´µÚÈýÎ¬Õ¹¿ªM¾ÍÊÇ£¨5,72£©µÄ¾ØÕó
 
-		for (p_M=M.begin();p_M!=M.begin();p_M++)
+		for (p_M = M.begin(); p_M != M.begin(); p_M++)
 		{
 			double tmp;
 			double i;
-			tmp=0;
-			for (i=0,pp_M=p_M->begin();pp_M!=p_M->end();i++,pp_M++)		//ÇóMÖÐÃ¿Ò»ÐÐµÄÆ½¾ùÖµ
+			tmp = 0;
+			for (i = 0, pp_M = p_M -> begin(); pp_M != p_M -> end(); i++, pp_M++)		//ÇóMÖÐÃ¿Ò»ÐÐµÄÆ½¾ùÖµ
 			{
-				tmp=tmp*i;
-				tmp=(tmp+(*pp_M))/(i+1);
+				tmp = tmp * i;
+				tmp = (tmp + (*pp_M)) / (i + 1);
 			}
 
-			for (pp_M=p_M->begin();pp_M!=p_M->end();pp_M++)		//ÕâÒ»ÐÐµÄËùÓÐµÄÊýÔÙ¼õÈ¥Õâ¸öÆ½¾ùÖµ
+			for (pp_M = p_M -> begin(); pp_M != p_M -> end(); pp_M++)		//ÕâÒ»ÐÐµÄËùÓÐµÄÊýÔÙ¼õÈ¥Õâ¸öÆ½¾ùÖµ
 			{
-				*pp_M=*pp_M-tmp;
+				*pp_M = *pp_M - tmp;
 			}
 		}
 
 
-		u=tfastsvd(M);	    //¿ìËÙsvd·Ö½âÇó³öÃ¿Ò»Î¬dtensorµÄÌØÕ÷Öµ
+		u = tfastsvd(M);	    //¿ìËÙsvd·Ö½âÇó³öÃ¿Ò»Î¬dtensorµÄÌØÕ÷Öµ
 		Size_Vec s_u;
 		double *trans_u;		//ÎªÑ¹Èëµ½re.U×ö×¼±¸
-		s_u=size(u);		//µÃµ½µÄÌØÕ÷¾ØÕóµÄÐÐÁÐµÄ´óÐ¡
-		trans_u=new double[long(s_u.r*s_u.c)];
-		trans_u=vector2matrix(u);
+		s_u = size(u);		//µÃµ½µÄÌØÕ÷¾ØÕóµÄÐÐÁÐµÄ´óÐ¡
+		trans_u = new double[long(s_u.r * s_u.c)];
+		trans_u = vector2matrix(u);
 
 		re.U.push_back(trans_u);	//´æ´¢°´Ã¿Ò»Î¬Õ¹¿ªµÄÌØÕ÷¾ØÕó
 		delete[] trans_u;
 
 		double threld;
-		threld=1;
-		for (p_d=d.begin();p_d!=d.end();p_d++)
+		threld = 1;
+		for (p_d = d.begin(); p_d != d.end(); p_d++)
 		{
-			if (p_d!=p_modes)
+			if (p_d != p_modes)
 			{
-				threld=threld*(*p_d);
+				threld = threld * (*p_d);
 			}
 		}
 
-		if (threld>350000)
+		if (threld > 350000)
 		{
-			cdata=mode_m_prod(cdata,re.U.at(i),i,1);
+			cdata = mode_m_prod(cdata, re.U.at(i), i, 1);
 		} 
 		else
 		{
-			cdata=mode_m_prod(cdata,re.U.at(i),i,0);
+			cdata = mode_m_prod(cdata, re.U.at(i), i, 0);
 		}
 
 	}
 
 	return re;
-}
-
-
-int main()
-{
-	//	Data re;
-
-
-
-
-	return 0;
 }

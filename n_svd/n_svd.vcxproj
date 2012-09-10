@@ -60,7 +60,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="n_svd.cpp" />
+    <ClCompile Include="svd.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="svd.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
