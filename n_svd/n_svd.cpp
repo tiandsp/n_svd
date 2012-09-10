@@ -31,7 +31,6 @@ Size_Vec size(vector< vector<double> > M)	//·µ»ØÒ»¸ö¶þÎ¬vectorÐÐÓëÁÐµÄ´óÐ¡
 	return s;
 }
 
-
 double *vector2matrix(vector< vector<double> > M)  //½«¶þÎ¬µÄvector×ª»»Îª¶þÎ¬µÄÊý×é
 {
 	vector< vector<double> >::iterator p_M;
@@ -57,6 +56,33 @@ double *vector2matrix(vector< vector<double> > M)  //½«¶þÎ¬µÄvector×ª»»Îª¶þÎ¬µÄÊ
 	return m;
 }
 
+double **vector2matrix2(vector< vector<double> > M)
+{
+	double **m;
+	Size_Vec size_M;
+	vector< vector<double> >::iterator p_M;
+	vector<double>::iterator pp_M;	
+	size_M = size(M);
+
+	m = new double *[long(size_M.r)];
+	for (double i = 0; i < size_M.r; i++)
+	{
+		m[long(i)] = new double[long(size_M.c)];
+	}
+
+	double i, j;
+	for (i = 0, p_M = M.begin(); p_M != M.end(); i++, p_M++)
+	{
+		for (j = 0, pp_M = p_M -> begin(); pp_M != p_M -> end(); j++, pp_M++)
+		{
+			m[long(i)][long(j)] = *pp_M;
+		}
+	}
+
+	return m;
+
+}
+
 vector< vector<double> > matrix2vector(double *m, double r, double c)  //½«¶þÎ¬µÄÊý×é×ª»»Îª¶þÎ¬µÄvector
 {
 	vector< vector<double> > M;
@@ -75,28 +101,46 @@ vector< vector<double> > matrix2vector(double *m, double r, double c)  //½«¶þÎ¬µ
 	return M;
 }
 
+vector< vector<double> > matrix2vector2(double **m,double r,double c)
+{
+	vector< vector<double> > M;
+	vector<double> data;
+	for (double i = 0 ; i < r; i++)
+	{
+		for (double j = 0; j < c; j++)
+		{
+			data.push_back(m[long(i)][long(j)]);
+		}
+		M.push_back(data);
+		data.clear();
+
+	}
+	return M;
+
+}
+
 void brinv(double *a, double n)
 { 
 	double *is, *js, i, j, k, l, u, v;
 	double d,p;
-	is=new double[long(n)];
-	js=new double[long(n)];
-	for (k=0; k<n; k++)
+	is = new double[long(n)];
+	js = new double[long(n)];
+	for (k = 0; k < n; k++)
 	{ 
-		d=0.0;
-		for (i=k; i<n; i++)
-			for (j=k; j<=n-1; j++)
+		d = 0.0;
+		for (i = k; i < n; i++)
+			for (j = k; j < n; j++)
 			{	
-				l=i*n+j; 
-				p=fabs(a[long(l)]);
-				if (p>d) 
+				l = i * n + j; 
+				p = fabs(a[long(l)]);
+				if (p > d) 
 				{ 
-					d=p;
-					is[long(k)]=i; 
-					js[long(k)]=j;
+					d = p;
+					is[long(k)] = i; 
+					js[long(k)] = j;
 				}
 			}
-			if (d+1.0==1.0)
+			if (d + 1.0 == 1.0)
 			{
 				delete[] is;
 				delete[] js;
@@ -104,66 +148,66 @@ void brinv(double *a, double n)
 				cout<<"error not inv"<<endl;
 				exit(1);
 			}
-			if (is[long(k)]!=k)
-				for (j=0; j<n; j++)
+			if (is[long(k)] != k)
+				for (j = 0; j < n; j++)
 				{
-					u=k*n+j;
-					v=is[long(k)]*n+j;
-					p=a[long(u)];
-					a[long(u)]=a[long(v)];
-					a[long(v)]=p;
+					u = k * n + j;
+					v = is[long(k)] * n + j;
+					p = a[long(u)];
+					a[long(u)] = a[long(v)];
+					a[long(v)] = p;
 				}
-				if (js[long(k)]!=k)
-					for (i=0; i<n; i++)
+				if (js[long(k)] != k)
+					for (i = 0; i < n; i++)
 					{
-						u=i*n+k;
-						v=i*n+js[long(k)];
-						p=a[long(u)];
-						a[long(u)]=a[long(v)];
-						a[long(v)]=p;
+						u = i * n + k;
+						v = i * n + js[long(k)];
+						p = a[long(u)];
+						a[long(u)] = a[long(v)];
+						a[long(v)] = p;
 					}
-					l=k*n+k;
-					a[long(l)]=1.0/a[long(l)];
-					for (j=0; j<n; j++)
-						if (j!=k)
+					l = k * n + k;
+					a[long(l)] = 1.0 / a[long(l)];
+					for (j = 0; j < n; j++)
+						if (j != k)
 						{ 
-							u=k*n+j; 
-							a[long(u)]=a[long(u)]*a[long(l)];
+							u = k * n + j; 
+							a[long(u)] = a[long(u)] * a[long(l)];
 						}
-						for (i=0; i<=n-1; i++)
-							if (i!=k)
-								for (j=0; j<n; j++)
-									if (j!=k)
+						for (i = 0; i < n; i++)
+							if (i != k)
+								for (j = 0; j < n; j++)
+									if (j != k)
 									{
-										u=i*n+j;
-										a[long(u)]=a[long(u)]-a[long(i*n+k)]*a[long(k*n+j)];
+										u = i * n + j;
+										a[long(u)] = a[long(u)] - a[long(i * n + k)] * a[long(k * n + j)];
 									}
-									for (i=0; i<n; i++)
-										if (i!=k)
+									for (i = 0; i < n; i++)
+										if (i != k)
 										{
-											u=i*n+k; 
-											a[long(u)]=-a[long(u)]*a[long(l)];
+											u = i * n + k; 
+											a[long(u)] = -a[long(u)] * a[long(l)];
 										}
 	}
-	for (k=n-1; k>=0; k--)
+	for (k = n-1; k >= 0; k--)
 	{
-		if (js[long(k)]!=k)
-			for (j=0; j<n; j++)
+		if (js[long(k)] != k)
+			for (j = 0; j < n; j++)
 			{
-				u=k*n+j;
-				v=js[long(k)]*n+j;
-				p=a[long(u)]; 
-				a[long(u)]=a[long(v)];
-				a[long(v)]=p;
+				u = k * n + j;
+				v = js[long(k)] * n + j;
+				p = a[long(u)]; 
+				a[long(u)] = a[long(v)];
+				a[long(v)] = p;
 			}
-			if (is[long(k)]!=k)
-				for (i=0; i<n; i++)
+			if (is[long(k)] != k)
+				for (i = 0; i < n; i++)
 				{
-					u=i*n+k; 
-					v=i*n+is[long(k)];
-					p=a[long(u)]; 
-					a[long(u)]=a[long(v)];
-					a[long(v)]=p;
+					u = i * n + k; 
+					v = i * n + is[long(k)];
+					p = a[long(u)]; 
+					a[long(u)] = a[long(v)];
+					a[long(v)] = p;
 				}
 	}
 
@@ -183,7 +227,7 @@ double *inv(vector< vector<double> > s)
 	data = new double[long(size_s.r * size_s.c)];
 	data = vector2matrix(s);
 
-	brinv(data,size_s.r);
+	brinv(data, size_s.r);
 
 	return data;
 }
@@ -283,14 +327,81 @@ vector< vector<double> > matricize(vector< vector<double> > tensor, double n)
 SVD_Data svd(vector< vector<double> > M, int n)
 {
 	SVD_Data re;
+
+
+
 	
 	return re;
 }
 
 SVD_Data svd(vector< vector<double> > M)
 {
-	SVD_Data re;
-	
+	SVD_Data re;	
+	Size_Vec size_M;
+	double **a;
+	double **p;
+	double *d;
+	double **q;
+
+	size_M = size(M);
+	if (size_M.r >= size_M.c)
+	{
+		a=new double *[long(size_M.r)];
+		for (double i = 0; i < size_M.r; i++)
+		{
+			a[long(i)]=new double[long(size_M.c)];
+		}
+
+		p=new double *[long(size_M.r)];
+		for (double i=0;i< size_M.r;i++)
+		{
+			p[long(i)]=new double[long(size_M.r)];
+		}
+
+		d=new double[long(size_M.c)];
+
+		q=new double *[long(size_M.c)];
+		for (double i=0;i<size_M.c;i++)
+		{
+			q[long(i)]=new double[long(size_M.c)];
+		}
+
+		a=vector2matrix2(M);
+
+		svd(size_M.r, size_M.c, a, p, d, q);
+
+		re.s=matrix2vector2(p,size_M.r,size_M.r);
+		re.u=matrix2vector(d,1,0);
+		re.v=matrix2vector2(q,size_M.c,size_M.c);
+
+		for (double i=0;i<size_M.r;i++)
+		{
+			delete[] a[long(i)];
+		}
+		delete[] a;
+
+		for (double i=0;i<size_M.r;i++)
+		{
+			delete[] p[long(i)];
+		}
+		delete[] p;
+
+		delete[] d;
+
+		for (double i=0;i<size_M.c;i++)
+		{
+			delete[] q[long(i)];
+		}
+		delete[] q;
+	}
+	else if (size_M.r < size_M.c)
+	{
+
+
+	}
+
+
+
 	return re;
 
 }

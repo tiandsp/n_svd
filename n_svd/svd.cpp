@@ -64,7 +64,7 @@ void svd(int m, int n, double **a, double **p, double *d, double **q)
         double          c, f, h, s, x, y, z;
         double          anorm = 0, g = 0, scale = 0;
         //double         *r = tvector_alloc(0, n, double);
-                double                  *r = (double*)malloc(sizeof(double)*n);
+        double          *r = (double*)malloc(sizeof(double)*n);
 
         for (i = 0; i < m; i++)
                 for (j = 0; j < n; j++)
