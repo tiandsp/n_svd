@@ -1,0 +1,23 @@
+﻿生成启动时间为 2012/9/10 10:27:46。
+     1>项目“c:\Users\tc\documents\visual studio 2010\Projects\n_svd\n_svd\n_svd.vcxproj”在节点 2 上(rebuild 个目标)。
+     1>_PrepareForClean:
+         正在删除文件“Debug\n_svd.lastbuildstate”。
+       InitializeBuildStatus:
+         正在对“Debug\n_svd.unsuccessfulbuild”执行 Touch 任务。
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt n_svd.cpp
+         n_svd.cpp
+     1>c:\users\tc\documents\visual studio 2010\projects\n_svd\n_svd\n_svd.cpp(125): warning C4244: “参数”: 从“double”转换到“__w64 int”，可能丢失数据
+     1>c:\users\tc\documents\visual studio 2010\projects\n_svd\n_svd\n_svd.cpp(180): warning C4244: “参数”: 从“double”转换到“size_t”，可能丢失数据
+     1>c:\users\tc\documents\visual studio 2010\projects\n_svd\n_svd\n_svd.cpp(390): warning C4244: “参数”: 从“double”转换到“unsigned int”，可能丢失数据
+     1>c:\users\tc\documents\visual studio 2010\projects\n_svd\n_svd\n_svd.cpp(394): warning C4244: “参数”: 从“double”转换到“unsigned int”，可能丢失数据
+     1>c:\users\tc\documents\visual studio 2010\projects\n_svd\n_svd\n_svd.cpp(340): warning C4101: “size_M”: 未引用的局部变量
+     1>c:\users\tc\documents\visual studio 2010\projects\n_svd\n_svd\n_svd.cpp(85): warning C4700: 使用了未初始化的局部变量“re”
+     1>c:\users\tc\documents\visual studio 2010\projects\n_svd\n_svd\n_svd.cpp(167): error C4716: “svd”: 必须返回一个值
+     1>c:\users\tc\documents\visual studio 2010\projects\n_svd\n_svd\n_svd.cpp(172): error C4716: “svd”: 必须返回一个值
+     1>c:\users\tc\documents\visual studio 2010\projects\n_svd\n_svd\n_svd.cpp(320): error C4716: “mode_m_prod”: 必须返回一个值
+     1>已完成生成项目“c:\Users\tc\documents\visual studio 2010\Projects\n_svd\n_svd\n_svd.vcxproj”(rebuild 个目标)的操作 - 失败。
+
+生成失败。
+
+已用时间 00:00:02.40
