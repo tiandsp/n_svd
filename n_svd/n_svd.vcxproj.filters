@@ -29,5 +29,8 @@
     <ClInclude Include="svd.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="n_svd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

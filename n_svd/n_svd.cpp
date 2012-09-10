@@ -1,6 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <cmath>
+#include "n_svd.h"
 using namespace std;
 
 typedef struct _DATA
@@ -77,6 +75,103 @@ vector< vector<double> > matrix2vector(double *m, double r, double c)  //½«¶þÎ¬µ
 	return M;
 }
 
+void brinv(double *a, double n)
+{ 
+	double *is, *js, i, j, k, l, u, v;
+	double d,p;
+	is=new double[long(n)];
+	js=new double[long(n)];
+	for (k=0; k<n; k++)
+	{ 
+		d=0.0;
+		for (i=k; i<n; i++)
+			for (j=k; j<=n-1; j++)
+			{	
+				l=i*n+j; 
+				p=fabs(a[long(l)]);
+				if (p>d) 
+				{ 
+					d=p;
+					is[long(k)]=i; 
+					js[long(k)]=j;
+				}
+			}
+			if (d+1.0==1.0)
+			{
+				delete[] is;
+				delete[] js;
+				printf("err**not inv\n");
+				cout<<"error not inv"<<endl;
+				exit(1);
+			}
+			if (is[long(k)]!=k)
+				for (j=0; j<n; j++)
+				{
+					u=k*n+j;
+					v=is[long(k)]*n+j;
+					p=a[long(u)];
+					a[long(u)]=a[long(v)];
+					a[long(v)]=p;
+				}
+				if (js[long(k)]!=k)
+					for (i=0; i<n; i++)
+					{
+						u=i*n+k;
+						v=i*n+js[long(k)];
+						p=a[long(u)];
+						a[long(u)]=a[long(v)];
+						a[long(v)]=p;
+					}
+					l=k*n+k;
+					a[long(l)]=1.0/a[long(l)];
+					for (j=0; j<n; j++)
+						if (j!=k)
+						{ 
+							u=k*n+j; 
+							a[long(u)]=a[long(u)]*a[long(l)];
+						}
+						for (i=0; i<=n-1; i++)
+							if (i!=k)
+								for (j=0; j<n; j++)
+									if (j!=k)
+									{
+										u=i*n+j;
+										a[long(u)]=a[long(u)]-a[long(i*n+k)]*a[long(k*n+j)];
+									}
+									for (i=0; i<n; i++)
+										if (i!=k)
+										{
+											u=i*n+k; 
+											a[long(u)]=-a[long(u)]*a[long(l)];
+										}
+	}
+	for (k=n-1; k>=0; k--)
+	{
+		if (js[long(k)]!=k)
+			for (j=0; j<n; j++)
+			{
+				u=k*n+j;
+				v=js[long(k)]*n+j;
+				p=a[long(u)]; 
+				a[long(u)]=a[long(v)];
+				a[long(v)]=p;
+			}
+			if (is[long(k)]!=k)
+				for (i=0; i<n; i++)
+				{
+					u=i*n+k; 
+					v=i*n+is[long(k)];
+					p=a[long(u)]; 
+					a[long(u)]=a[long(v)];
+					a[long(v)]=p;
+				}
+	}
+
+	delete[] is;
+	delete[] js;
+
+}
+
 double *inv(vector< vector<double> > s)
 {
 	double *re;
@@ -88,12 +183,9 @@ double *inv(vector< vector<double> > s)
 	data = new double[long(size_s.r * size_s.c)];
 	data = vector2matrix(s);
 
+	brinv(data,size_s.r);
 
-
-
-
-	delete[] data;
-	return re;
+	return data;
 }
 
 void reverse_vec(vector< vector<double> > tensor, double p, double q)
@@ -101,9 +193,9 @@ void reverse_vec(vector< vector<double> > tensor, double p, double q)
 	vector<double> tmp;
 	while(p < q)
 	{
-		tmp = tensor.at(p);
-		tensor.at(p) = tensor.at(q);
-		tensor.at(q) = tmp;
+		tmp = tensor.at(long(p));
+		tensor.at(long(p)) = tensor.at(long(q));
+		tensor.at(long(q)) = tmp;
 		p++;
 		q--;
 	}
@@ -190,11 +282,16 @@ vector< vector<double> > matricize(vector< vector<double> > tensor, double n)
 
 SVD_Data svd(vector< vector<double> > M, int n)
 {
-
+	SVD_Data re;
+	
+	return re;
 }
 
 SVD_Data svd(vector< vector<double> > M)
 {
+	SVD_Data re;
+	
+	return re;
 
 }
 
@@ -338,8 +435,9 @@ vector< vector<double> > tfastsvd(vector< vector<double> > M)
 
 vector< vector<double> > mode_m_prod(vector< vector<double> > cdata, double *u, double i, int flag)
 {
+	vector< vector<double> > re;
 
-
+	return re;
 }
 
 

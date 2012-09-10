@@ -65,6 +65,7 @@
     <ClCompile Include="svd.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="n_svd.h" />
     <ClInclude Include="svd.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
