@@ -24,12 +24,24 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Tensor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="svd.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="n_svd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Tensor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

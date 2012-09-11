@@ -1,4 +1,5 @@
 #include "n_svd.h"
+#include <iostream>
 using namespace std;
 
 typedef struct _DATA

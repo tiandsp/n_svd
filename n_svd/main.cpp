@@ -1,11 +1,11 @@
-#include "n_svd.h"
-
-//void svd(int m, int n, double **a, double **p, double *d, double **q);
-
+#include "Mat.h"
+#include <iostream>
+using namespace std;
 int main()
 {
+	Mat m(3,3);
+	m.print();
 
 	system("pause");
-
 	return 0;
 }
