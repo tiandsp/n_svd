@@ -355,7 +355,7 @@ Mat Mat::operator/(Mat &M)
 	}
 
 	Mat tmp(row,M.col);
-	M.inv();
+	M=M.inv();
 
 	tmp=*this * M;
 	return tmp;
@@ -383,47 +383,53 @@ Mat Mat::operator/(double a)
 }
 
 
-void Mat::dotMultiplication(Mat &M)
+Mat Mat::dotMultiplication(Mat &M)
 {
+	Mat tmp(*this);
 	if (row!=M.row || col!=M.col)
 	{
 		cout<<"row or col not match"<<endl;
-		return ;
+		return *this;
 	}
 
 	for (long i=0;i<row;i++)
 	{
 		for (long j=0;j<col;j++)
 		{
-			data[i][j]=data[i][j]*M.data[i][j];
+			tmp.data[i][j]=data[i][j]*M.data[i][j];
 		}
 	}
+	return tmp;
 }
 
-void Mat::dotDivision(Mat &M)
+Mat Mat::dotDivision(Mat &M)
 {
+	Mat tmp(*this);
 	if (row!=M.row || col!=M.col)
 	{
 		cout<<"row or col not match"<<endl;
-		return ;
+		return *this;
 	}
 	
 	for (long i=0;i<row;i++)
 	{
 		for (long j=0;j<col;j++)
 		{
-			data[i][j]=data[i][j]/M.data[i][j];
+			tmp.data[i][j]=data[i][j]/M.data[i][j];
 		}
 	}
+	return tmp;
 }
 
-void Mat::inv()
+Mat Mat::inv()
 {
+	Mat tmp(*this);
+
 	if (col!=row)
 	{
 		cout<<"col must equal row"<<endl;
 		system("pause");
-		return ;
+		return *this;
 	}
 	
 	long n=row;
@@ -436,7 +442,7 @@ void Mat::inv()
 	{
 		for (j=0;j<n;j++)
 		{
-			a[long(i*n+j)]=data[long(i)][long(j)];
+			a[long(i*n+j)]=tmp.data[long(i)][long(j)];
 		}
 	}
 
@@ -533,21 +539,106 @@ void Mat::inv()
 	{
 		for (j=0;j<n;j++)
 		{
-			data[long(i)][long(j)]=a[long(i*n+j)];
+			tmp.data[long(i)][long(j)]=a[long(i*n+j)];
 		}
 	}
 	delete[] is;
 	delete[] js;
 	delete[] a;
+	return tmp;
 }
 
-SVD *Mat::svd()
+Mat Mat::dot()
 {
-	SVD *re;
-	re=new SVD;
-	re->u=new Mat(row,row);
-	re->s=new Mat(1,col);
-	re->v=new Mat(col,col);
+	Mat tmp(*this);
+
+
+
+
+
+	return  tmp;
+}
+
+Mat Mat::sqrtM()
+{
+	Mat tmp(*this);
+	for (long i=0;i<row;i++)
+	{
+		for (long j=0;j<col;j++)
+		{
+			tmp.data[i][j]=sqrtl(data[i][j]);
+		}
+	}
+	return tmp;
+}
+
+Mat Mat::mean(int n)
+{
+	
+	if (n==1)
+	{
+		Mat tmp(1,col);
+		double *a;
+		a=new double[col];
+		memset(a,0,col*sizeof(double));
+
+		for (long i=0;i<row;i++)
+		{
+			for (long j=0;j<col;j++)
+			{
+				a[j]=a[j]*i;
+				a[j]=(a[j]+data[i][j])/(i+1);
+			}
+		}
+		
+		for (long i=0;i<col;i++)
+		{
+			tmp.setElement(a[i],0,i);
+		}
+
+		delete[] a;
+		return tmp;
+	}
+	else if(n==2)
+	{
+		Mat tmp(row,1);
+		double *a;
+		a=new double[row];
+		memset(a,0,row*sizeof(double));
+
+		for (long i=0;i<row;i++)
+		{
+			for (long j=0;j<col;j++)
+			{
+				a[i]=a[i]*j;
+				a[i]=(a[i]+data[i][j])/(j+1);
+			}
+		}
+
+		for (long i=0;i<row;i++)
+		{
+			tmp.setElement(a[i],i,0);
+		}
+
+		delete[] a;
+		return tmp;
+	}
+	else
+	{
+		return *this;
+	}
+
+}
+
+
+void Mat::svd(SVD *re)
+{
+//	SVD *re;
+//	re=new SVD;
+
+//	re->u=new Mat(row,row);
+//	re->s=new Mat(1,col);
+//	re->v=new Mat(col,col);
 
 	if (row>=col)
 	{
@@ -598,7 +689,7 @@ SVD *Mat::svd()
 
 	for (long j=0;j<col;j++)
 	{
-		re->s->setElement(s[j],1,j);
+		re->s->setElement(s[j],0,j);
 	}
 
 	for (long i=0;i<col;i++)
@@ -609,7 +700,7 @@ SVD *Mat::svd()
 		}
 	}
 
-	return re;
+//	return re;
 
 }
 
