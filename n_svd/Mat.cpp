@@ -227,43 +227,12 @@ Mat Mat::operator~()
 {
 	Mat tmp(col,row);
 
-	for (long i=0;i<row;i++)
-	{
-		delete[] Svd.u[i];
-	}
-	delete[] Svd.u;
-
-	delete[] Svd.s;
-
-	for (long i=0;i<col;i++)
-	{
-		delete[] Svd.v[i];
-	}
-	delete Svd.v;
-
 	for (long j=0;j<col;j++)
 	{
 		for (long i=0;i<row;i++)
 		{
 			tmp.data[j][i]=data[i][j];
 		}
-	}
-
-	Svd.u=new double *[col];
-	for (long i=0;i<col;i++)
-	{
-		Svd.u[i]=new double[col];
-		memset(Svd.u[i],0,col*sizeof(double));
-	}
-
-	Svd.s=new double[row];
-	memset(Svd.s,0,row*sizeof(double));
-
-	Svd.v=new double *[row];
-	for (long i=0;i<row;i++)
-	{
-		Svd.v[i]=new double[row];
-		memset(Svd.v[i],0,row*sizeof(double));
 	}
 
 	return tmp;
@@ -587,7 +556,11 @@ void Mat::svd()
 		{
 			for (long j=0;j<row;j++)
 			{
-				Svd.u[i][j]=-tmp.Svd.v[i][j];
+				if (i==0)
+					Svd.u[i][j]=-tmp.Svd.v[i][j];
+				else
+					Svd.u[i][j]=tmp.Svd.v[i][j];
+
 			}
 		}
 
@@ -600,7 +573,10 @@ void Mat::svd()
 		{
 			for (long j=0;j<col;j++)
 			{
-				Svd.v[i][j]=-tmp.Svd.u[i][j];
+				if (i==0)
+					Svd.u[i][j]=-tmp.Svd.v[i][j];
+				else
+					Svd.u[i][j]=tmp.Svd.v[i][j];
 			}
 		}
 	}

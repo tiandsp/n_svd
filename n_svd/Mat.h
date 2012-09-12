@@ -37,10 +37,12 @@ public:
 	Mat operator/(Mat &);	//矩阵叉除
 	Mat operator/(double);
 
-	void dotMultiplication(Mat &);
-	void dotDivision(Mat &);
+	void dotMultiplication(Mat &);	//点积
+	void dotDivision(Mat &);		//点除
 	void inv();	//矩阵求逆
 	void svd();
+//	void 
+
 
 	void setElement(double,long,long);
 	double getElement(long,long);
