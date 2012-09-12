@@ -1,4 +1,5 @@
 #include "Mat.h"
+#include "BaseData.h"
 #include <memory>
 #include <iostream>
 #include <cmath>
@@ -9,6 +10,7 @@
 #define MAX(x, y)     ( (x) >= (y) ? (x) : (y) )  
 
 using namespace std;
+
 Mat::Mat(long r,long c)
 {
 	row=r;
@@ -21,21 +23,21 @@ Mat::Mat(long r,long c)
 		memset(data[i],0,c*sizeof(double));
 	}
 
-	Svd.u=new double *[row];
+	u=new double *[row];
 	for (long i=0;i<row;i++)
 	{
-		Svd.u[i]=new double[row];
-		memset(Svd.u[i],0,row*sizeof(double));
+		u[i]=new double[row];
+		memset(u[i],0,row*sizeof(double));
 	}
 
-	Svd.s=new double[col];
-	memset(Svd.s,0,col*sizeof(double));
+	s=new double[col];
+	memset(s,0,col*sizeof(double));
 
-	Svd.v=new double *[col];
+	v=new double *[col];
 	for (long i=0;i<col;i++)
 	{
-		Svd.v[i]=new double[col];
-		memset(Svd.v[i],0,col*sizeof(double));
+		v[i]=new double[col];
+		memset(v[i],0,col*sizeof(double));
 	}
 
 }
@@ -57,35 +59,35 @@ Mat::Mat(const Mat &M)
 			data[i][j]=M.data[i][j];
 	}
 
-	Svd.u=new double *[row];
+	u=new double *[row];
 	for (long i=0;i<row;i++)
 	{
-		Svd.u[i]=new double[row];
+		u[i]=new double[row];
 	}
 	for (long i=0;i<row;i++)
 	{
 		for (long j=0;j<row;j++)
 		{
-			Svd.u[i][j]=M.Svd.u[i][j];
+			u[i][j]=M.u[i][j];
 		}
 	}
 
-	Svd.s=new double[col];
+	s=new double[col];
 	for (long i=0;i<col;i++)
 	{
-		Svd.s[i]=M.Svd.s[i];
+		s[i]=M.s[i];
 	}
 	
-	Svd.v=new double *[col];
+	v=new double *[col];
 	for (long i=0;i<col;i++)
 	{
-		Svd.v[i]=new double[col];
+		v[i]=new double[col];
 	}
 	for (long i=0;i<col;i++)
 	{
 		for (long j=0;j<col;j++)
 		{
-			Svd.v[i][j]=M.Svd.v[i][j];
+			v[i][j]=M.v[i][j];
 		}
 	}
 }
@@ -95,18 +97,18 @@ Mat::~Mat()
 	for (long i=0;i<row;i++)
 	{
 		delete[] data[i];
-		delete[] Svd.u[i];
+		delete[] u[i];
 	}
 	delete[] data;
-	delete[] Svd.u;
+	delete[] u;
 
-	delete[] Svd.s;
+	delete[] s;
 
 	for (long i=0;i<col;i++)
 	{
-		delete[] Svd.v[i];
+		delete[] v[i];
 	}
-	delete Svd.v;
+	delete v;
 
 }
 
@@ -130,18 +132,18 @@ Mat &Mat::operator=(const Mat &M)
 	for (long i=0;i<row;i++)
 	{
 		delete[] data[i];
-		delete[] Svd.u[i];
+		delete[] u[i];
 	}
 	delete[] data;
-	delete[] Svd.u;
+	delete[] u;
 
-	delete[] Svd.s;
+	delete[] s;
 
 	for (long i=0;i<col;i++)
 	{
-		delete[] Svd.v[i];
+		delete[] v[i];
 	}
-	delete Svd.v;
+	delete v;
 
 	row=M.row;
 	col=M.col;
@@ -158,35 +160,35 @@ Mat &Mat::operator=(const Mat &M)
 			data[i][j]=M.data[i][j];
 	}
 
-	Svd.u=new double *[row];
+	u=new double *[row];
 	for (long i=0;i<row;i++)
 	{
-		Svd.u[i]=new double[row];
+		u[i]=new double[row];
 	}
 	for (long i=0;i<row;i++)
 	{
 		for (long j=0;j<row;j++)
 		{
-			Svd.u[i][j]=M.Svd.u[i][j];
+			u[i][j]=M.u[i][j];
 		}
 	}
 
-	Svd.s=new double[col];
+	s=new double[col];
 	for (long i=0;i<col;i++)
 	{
-		Svd.s[i]=M.Svd.s[i];
+		s[i]=M.s[i];
 	}
 
-	Svd.v=new double *[col];
+	v=new double *[col];
 	for (long i=0;i<col;i++)
 	{
-		Svd.v[i]=new double[col];
+		v[i]=new double[col];
 	}
 	for (long i=0;i<col;i++)
 	{
 		for (long j=0;j<col;j++)
 		{
-			Svd.v[i][j]=M.Svd.v[i][j];
+			v[i][j]=M.v[i][j];
 		}
 	}
 
@@ -539,34 +541,39 @@ void Mat::inv()
 	delete[] a;
 }
 
-void Mat::svd()
+SVD *Mat::svd()
 {
+	SVD *re;
+	re=new SVD;
+	re->u=new Mat(row,row);
+	re->s=new Mat(1,col);
+	re->v=new Mat(col,col);
 
 	if (row>=col)
 	{
-		svd(row,col,data,Svd.u,Svd.s,Svd.v);
+		svd(row,col,data,u,s,v);
 	}
 	else
 	{
 		Mat tmp(*this);
 		tmp=~tmp;
-		svd(tmp.row,tmp.col,tmp.data,tmp.Svd.u,tmp.Svd.s,tmp.Svd.v);
+		svd(tmp.row,tmp.col,tmp.data,tmp.u,tmp.s,tmp.v);
 
 		for (long i=0;i<row;i++)
 		{
 			for (long j=0;j<row;j++)
 			{
 				if (i==0)
-					Svd.u[i][j]=-tmp.Svd.v[i][j];
+					u[i][j]=-tmp.v[i][j];
 				else
-					Svd.u[i][j]=tmp.Svd.v[i][j];
+					u[i][j]=tmp.v[i][j];
 
 			}
 		}
 
 		for (long i=0;i<col;i++)
 		{
-			Svd.s[i]=tmp.Svd.s[i];
+			s[i]=tmp.s[i];
 		}
 
 		for (long i=0;i<col;i++)
@@ -574,12 +581,35 @@ void Mat::svd()
 			for (long j=0;j<col;j++)
 			{
 				if (i==0)
-					Svd.u[i][j]=-tmp.Svd.v[i][j];
+					u[i][j]=-tmp.v[i][j];
 				else
-					Svd.u[i][j]=tmp.Svd.v[i][j];
+					u[i][j]=tmp.v[i][j];
 			}
 		}
 	}
+
+	for (long i=0;i<row;i++)
+	{
+		for (long j=0;j<row;j++)
+		{
+			re->u->setElement(u[i][j],i,j);
+		}
+	}
+
+	for (long j=0;j<col;j++)
+	{
+		re->s->setElement(s[j],1,j);
+	}
+
+	for (long i=0;i<col;i++)
+	{
+		for (long j=0;j<col;j++)
+		{
+			re->v->setElement(u[i][j],i,j);
+		}
+	}
+
+	return re;
 
 }
 

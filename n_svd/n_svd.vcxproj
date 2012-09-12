@@ -67,6 +67,7 @@
     <ClCompile Include="svd.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseData.h" />
     <ClInclude Include="Mat.h" />
     <ClInclude Include="Tensor.h" />
     <ClInclude Include="n_svd.h" />

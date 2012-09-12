@@ -1,14 +1,20 @@
 #ifndef _MAT_H
 #define _MAT_H
+#include "BaseData.h"
 
+/*
 typedef struct _SVD
 {
-	double **u;
-	double *s;
-	double **v;
+	//	double **u;
+	//	double *s;
+	//	double **v;
+	Mat u;
+	Mat s;
+	Mat v;
 
 }SVD;
-
+*/
+class SVD;
 class Mat
 {
 public:
@@ -40,16 +46,17 @@ public:
 	void dotMultiplication(Mat &);	//点积
 	void dotDivision(Mat &);		//点除
 	void inv();	//矩阵求逆
-	void svd();
-//	void 
-
+	SVD *svd();
+//	Mat dot();
+//	Mat sqrt();
+//  Mat abs();
 
 	void setElement(double,long,long);
 	double getElement(long,long);
 	void print();
 
 public:
-	SVD Svd;
+//	SVD Svd;
 
 private:
 	void svd(int m, int n, double **a, double **p, double *d, double **q);
@@ -59,6 +66,10 @@ private:
 	long row;
 	long col;
 	long size;
+
+	double **u;
+	double *s;
+	double **v;
 
 };
 

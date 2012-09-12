@@ -44,5 +44,8 @@
     <ClInclude Include="Mat.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="BaseData.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
