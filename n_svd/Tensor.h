@@ -1,5 +1,5 @@
 #ifndef _TENSOR_H
-#define  _TENSOR_H
+#define _TENSOR_H
 
 
 class Tensor

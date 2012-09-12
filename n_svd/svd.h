@@ -32,6 +32,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _SVD_H
 
 
-void svd(int m, int n, double **a, double **p, double *d, double **q);
+extern void svd(int m, int n, double **a, double **p, double *d, double **q);
 
 #endif
