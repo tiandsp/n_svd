@@ -31,7 +31,8 @@ int main()
 
 //	delete re;
 
-	m=m.dot();
+	//m=m.dot();
+	m=m.reshape(4,1);
 	m.print();
 
 	system("pause");

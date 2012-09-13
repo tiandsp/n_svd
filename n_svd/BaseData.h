@@ -2,8 +2,9 @@
 #define _BASEDATA_H
 
 #include "Mat.h"
-
+#include "Tensor.h"
 class Mat;
+class Tensor;
 
 class SVD
 {
@@ -17,7 +18,17 @@ public:
 
 };
 
+class N_SVD
+{
+public:
+	N_SVD();
+	~N_SVD();
 
+
+	Mat *U;
+	Tensor *core;
+
+};
 
 
 

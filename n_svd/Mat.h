@@ -38,7 +38,7 @@ public:
 	Mat dot();
 	Mat sqrtM();
 	Mat mean(int n);
-
+	Mat reshape(long,long);
 
 	void setElement(double,long,long);
 	double getElement(long,long);

@@ -659,6 +659,42 @@ Mat Mat::mean(int n)
 
 }
 
+Mat Mat::reshape(long r,long c)
+{
+	if (r*c!=row*col)
+	{
+		cout<<"the size must be equal"<<endl;
+		system("pause");
+		return *this;
+	}
+
+	Mat tmp(r,c);
+	double *a;
+	a=new double[r*c];
+	memset(a,0,r*c*sizeof(double));
+
+	for (long i=0;i<row;i++)
+	{
+		for (long j=0;j<col;j++)
+		{
+			a[i*col+j]=data[i][j];
+		}
+	}
+
+	for (long i=0;i<r;i++)
+	{
+		for (long j=0;j<c;j++)
+		{
+			tmp.data[i][j]=a[i*c+j];
+		}
+	}
+	
+	delete[] a;
+
+	return tmp;
+
+
+}
 
 void Mat::svd(SVD *re)
 {
