@@ -112,3 +112,220 @@ bool Tensor::operator==(const Tensor &T) const
 }
 
 
+bool Tensor::operator!=(const Tensor &T) const
+{
+	if (*this==T)
+	{
+		return false;
+	}
+	return true;
+}
+
+Tensor Tensor::operator+(Tensor &T)
+{
+	if (n!=T.n)
+	{
+		cout<<"dim must equal"<<endl;
+		return *this;
+	}
+
+	for (long i=0;i<n;i++)
+	{
+		if (N[i]!=T.N[i])
+		{
+			cout<<"dim must equal"<<endl;
+			return *this;
+		}
+	}
+
+	for (long i=0;i<n;i++)
+	{
+		for (long j=0;j<N[i];j++)
+		{
+			data[i][j]=T.data[i][j]+data[i][j];
+		}
+	}
+	return *this;
+}
+
+Tensor Tensor::operator+(double a)
+{
+	for (long i=0;i<n;i++)
+	{
+		for (long j=0;j<N[i];j++)
+		{
+			data[i][j]=data[i][j]+a;
+		}
+	}
+	return *this;
+}
+
+Tensor Tensor::operator-(Tensor &T)
+{
+	if (n!=T.n)
+	{
+		cout<<"dim must equal"<<endl;
+		return *this;
+	}
+
+	for (long i=0;i<n;i++)
+	{
+		if (N[i]!=T.N[i])
+		{
+			cout<<"dim must equal"<<endl;
+			return *this;
+		}
+	}
+
+	for (long i=0;i<n;i++)
+	{
+		for (long j=0;j<N[i];j++)
+		{
+			data[i][j]=data[i][j]-T.data[i][j];
+		}
+	}
+	return *this;
+}
+
+Tensor Tensor::operator-(double a)
+{
+	for (long i=0;i<n;i++)
+	{
+		for (long j=0;j<N[i];j++)
+		{
+			data[i][j]=data[i][j]-a;
+		}
+	}
+	return *this;
+}
+
+Tensor Tensor::operator*(Tensor &T)
+{
+	if (n!=T.n)
+	{
+		cout<<"dim must equal"<<endl;
+		return *this;
+	}
+
+	for (long i=0;i<n;i++)
+	{
+		if (N[i]!=T.N[i])
+		{
+			cout<<"dim must equal"<<endl;
+			return *this;
+		}
+	}
+
+	for (long i=0;i<n;i++)
+	{
+		for (long j=0;j<N[i];j++)
+		{
+			data[i][j]=data[i][j]*T.data[i][j];
+		}
+	}
+	return *this;
+
+}
+
+Tensor Tensor::operator*(double a)
+{
+	for (long i=0;i<n;i++)
+	{
+		for (long j=0;j<N[i];j++)
+		{
+			data[i][j]=data[i][j]*a;
+		}
+	}
+	return *this;
+}
+
+Tensor Tensor::operator/(Tensor &T)
+{
+	if (n!=T.n)
+	{
+		cout<<"dim must equal"<<endl;
+		return *this;
+	}
+
+	for (long i=0;i<n;i++)
+	{
+		if (N[i]!=T.N[i])
+		{
+			cout<<"dim must equal"<<endl;
+			return *this;
+		}
+	}
+	Tensor tmp(*this);
+
+	for (long i=0;i<n;i++)
+	{
+		for (long j=0;j<N[i];j++)
+		{
+			if (T.data[i][j]==0)
+			{
+				cout<<"divison zero"<<endl;
+				return tmp;
+			}
+			else
+			{
+				data[i][j]=data[i][j]/T.data[i][j];
+			}
+		}
+	}
+	return *this;
+}
+
+Tensor Tensor::operator/(double a)
+{
+	if (a==0)
+	{
+		cout<<"division zero"<<endl;
+		return *this;
+	}
+
+	for (long i=0;i<n;i++)
+	{
+		for (long j=0;j<N[i];j++)
+		{
+			data[i][j]=data[i][j]/a;
+		}
+	}
+	return *this;
+}
+
+N_SVD *Tensor::m_mode_svd()
+{
+	N_SVD *nsvd;
+
+	return nsvd;
+}
+
+Mat Tensor::getSize()
+{
+	Mat tmp(1,n);
+	for (long i=0;i<n;i++)
+	{
+		tmp.setElement(N[i],0,i);
+	}
+	return tmp;
+}
+
+long Tensor::getDim()
+{
+	return n;
+}
+
+void Tensor::setElement(double a,long b,...)
+{
+	
+
+
+
+
+}
+
+double Tensor::getElement(long b,...)
+{
+
+	return 0;
+}

@@ -1,6 +1,6 @@
 #ifndef _N_SVD_H
 #define _N_SVD_H
-
+#include <vector>
 #include "Tensor.h"
 using namespace std;
 class Tensor;

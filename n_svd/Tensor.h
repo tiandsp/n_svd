@@ -22,9 +22,10 @@ public:
 	Tensor operator-(Tensor &);
 	Tensor operator-(double);
 
-//	Tensor operator*(Tensor &);
+	Tensor operator*(Tensor &);	//µã³Ë
 	Tensor operator*(double);
 
+	Tensor operator/(Tensor &); //µã³ý
 	Tensor operator/(double);
 
 	N_SVD *m_mode_svd();

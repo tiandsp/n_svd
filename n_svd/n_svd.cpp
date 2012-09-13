@@ -369,7 +369,7 @@ SVD_Data svd(vector< vector<double> > M)
 
 		a=vector2matrix2(M);
 
-		svd(size_M.r, size_M.c, a, p, d, q);
+//		svd(size_M.r, size_M.c, a, p, d, q);
 
 		re.s=matrix2vector2(p,size_M.r,size_M.r);
 		re.u=matrix2vector(d,1,0);
