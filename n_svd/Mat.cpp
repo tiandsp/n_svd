@@ -550,13 +550,42 @@ Mat Mat::inv()
 
 Mat Mat::dot()
 {
-	Mat tmp(*this);
+	if (row==1)
+	{
+		Mat tmp(1,1);
+		double temp=0;
+			
+		for (long j=0;j<col;j++)
+		{
+			temp+=data[0][j]*data[0][j];
+		}
+		tmp.setElement(temp,0,0);
 
+		return tmp;
+	}
+	else
+	{
+		Mat tmp(1,col);
+		double *t;
+		t=new double[col];
+		memset(t,0,col*sizeof(double));
 
+		for (long i=0;i<row;i++)
+		{
+			for (long j=0;j<col;j++)
+			{
+				t[j]+=data[i][j]*data[i][j];
+			}
+		}
 
+		for (long i=0;i<col;i++)
+		{
+			tmp.setElement(t[i],0,i);
 
-
-	return  tmp;
+		}
+		delete[] t;
+		return tmp;
+	}
 }
 
 Mat Mat::sqrtM()
