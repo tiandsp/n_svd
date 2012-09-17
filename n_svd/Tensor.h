@@ -30,6 +30,7 @@ public:
 
 	N_SVD *m_mode_svd();
 
+
 	Mat getSize();
 	long getDim();
 
@@ -37,10 +38,13 @@ public:
 	double getElement(long,...);
 
 private:
-	long *N;
-	long n;
-	double **data;
+	Mat tfastsvd();
 
+private:
+	long *N;	//每个维数的值
+	long dim;	//数据的维数
+	double *data;	//每个数据的值
+	long n;	//数据的个数
 };
 
 
