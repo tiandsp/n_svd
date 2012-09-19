@@ -38,10 +38,14 @@ public:
 	Mat dotDivision(Mat &);		//µã³ý
 	Mat inv();	//¾ØÕóÇóÄæ
 	void svd(SVD*);
+	Mat tfastsvd();
+
 	Mat dot();
 	Mat sqrtM();
 	Mat mean(int n);
 	Mat reshape(long,long);
+	long prod();
+	long prod(long,long);
 
 	void setElement(double,long,long);
 	double getElement(long,long);

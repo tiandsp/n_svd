@@ -294,6 +294,11 @@ Mat Tensor::getSize()
 	return tmp;
 }
 
+long Tensor::getSize(long i)
+{
+	return N[i];
+}
+
 long Tensor::getDim()
 {
 	return dim;
@@ -376,29 +381,61 @@ double Tensor::getElement(long b,...)
 N_SVD *Tensor::m_mode_svd()
 {
 	N_SVD *nsvd;
+	nsvd=new N_SVD;
 	Mat d;
 	Mat M;
 	d=this->getSize();
 
 	Tensor cdata(*this);
 	long modes=d.getSize();
+	nsvd->U=new Mat[modes];
 
 	for (long i=0;i<modes;i++)
 	{
 		M=this->matricize(cdata,i);
+		long r=M.getRow();
+		long c=M.getCol();
+		Mat tmp;
+		tmp=M.mean(2);
+		tmp=tmp.repmat(1,c);
+		M=M-tmp;
+
+		nsvd->U[i]=M.tfastsvd();
+	
+		cdata=cdata.mode_m_prod(M,i);
 
 	}
-
+	nsvd->core=new Tensor(cdata);
 
 	return nsvd;
+}
+
+Tensor Tensor::shiftdim(long i)
+{
+	return *this;
+}
+
+Mat Tensor::reshape(long r,long c)
+{
+	Mat re;
+
+	return re;
 }
 
 Mat Tensor::matricize(Tensor cdata,long i)
 {
 	Mat M;
+	Mat s=this->getSize();
+	long ss=this->getSize(i);
+	long dim=s.prod();
+	cdata=cdata.shiftdim(i);
 
-
-
-
+	M=cdata.reshape(ss,dim/ss);
 	return M;
+}
+
+Tensor Tensor::mode_m_prod(Mat M,long i)
+{
+
+	return *this;
 }

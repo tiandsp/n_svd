@@ -1098,28 +1098,87 @@ void Mat::svd(int m, int n, double **a, double **p, double *d, double **q)
 
 }
 
-Mat Mat::repmat(long r,long c)		//ÓÐbug
+Mat Mat::repmat(long r,long c)		
 {
-	long R;
-	long C;
-	R=r*row;
-	C=c*col;
-	Mat re(R,C);
-
-	for (long i=0;i<R;i+=c)
+	if (r<=0 || c<=0)
 	{
-		for (long j=0;j<C;j+=r)
+		cout<<"repmat wrong."<<endl;
+		return *this;
+	}
+
+	Mat re(row*r,col*c);
+
+	for (long m=0;m<row*r;m+=row)
+	{
+		for (long n=0;n<col*c;n+=col)
 		{
-			for (long m=0;m<row;m++)
+			for (long i=0;i<row;i++)
 			{
-				for (long n=0;n<col;n++)
+				for (long j=0;j<col;j++)
 				{
-					re.setElement(this->getElement(m,n),i+m,j+n);
+					re.data[m+i][n+j]=data[i][j];
 				}
 			}
 		}
-	}
 
+	}
+	
 	return re;
 }
 
+long Mat::prod()
+{
+	long re=1;
+	for (long i=0;i<row;i++)
+	{
+		for (long j=0;j<col;j++)
+		{
+			re*=data[i][j];
+		}
+	}
+	return re;
+}
+
+long Mat::prod(long r,long c)
+{
+	long re=1;
+	for (long i=0;i<row;i++)
+	{
+		for (long j=0;j<col;j++)
+		{
+			if (r!=row && c!=col)
+			{
+				re*=data[i][j];
+			}
+		}
+	}
+	return re;
+}
+
+
+Mat Mat::tfastsvd()
+{
+	long r=row;
+	long c=col;
+
+	if (r==1)
+	{
+	}
+	else if (r<c)
+	{
+	}
+	else if(c==1)
+	{
+
+	}
+	else if (c<r)
+	{
+	}
+	else
+	{
+
+	}
+
+
+	return *this;
+}

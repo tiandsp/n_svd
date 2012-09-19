@@ -33,6 +33,7 @@ public:
 
 
 	Mat getSize();
+	long getSize(long i);
 	long getDim();
 
 	void setElement(double,long,...);
@@ -40,8 +41,9 @@ public:
 
 private:
 	Mat matricize(Tensor,long);
-	Mat tfastsvd();
-
+	Tensor mode_m_prod(Mat,long);
+	Tensor shiftdim(long);
+	Mat reshape(long,long);
 
 private:
 	long *N;	//每个维数的值
