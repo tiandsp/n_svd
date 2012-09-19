@@ -6,34 +6,22 @@ int main()
 {
 
 
-	int r=2;
-	int c=2;
-//	SVD *re;
+	int r=3;
+	int c=1;
 
-//	re=new SVD;
-//	re->u=new Mat(r,r);
-//	re->s=new Mat(1,c);
-//	re->v=new Mat(c,c);
 	Mat m(r,c);
 	m.setElement(1,0,0);
-	m.setElement(4,0,1);
-//	m.setElement(5,0,2);
-	m.setElement(3,1,0);
-	m.setElement(2,1,1);
+	m.setElement(4,1,0);
+	m.setElement(3,2,0);
 
-	m.print();
-//	m=~m;
-//	m.svd(re);
+//	m.print();
+	cout<<m;
+	Mat s;
 
-//	delete re->u;
-//	delete re->s;
-//	delete re->v;
+	s=m.repmat(1,2);
 
-//	delete re;
 
-	//m=m.dot();
-	m=m.reshape(4,1);
-	m.print();
+	s.print();
 
 	system("pause");
 	return 0;

@@ -376,6 +376,29 @@ double Tensor::getElement(long b,...)
 N_SVD *Tensor::m_mode_svd()
 {
 	N_SVD *nsvd;
+	Mat d;
+	Mat M;
+	d=this->getSize();
+
+	Tensor cdata(*this);
+	long modes=d.getSize();
+
+	for (long i=0;i<modes;i++)
+	{
+		M=this->matricize(cdata,i);
+
+	}
+
 
 	return nsvd;
+}
+
+Mat Tensor::matricize(Tensor cdata,long i)
+{
+	Mat M;
+
+
+
+
+	return M;
 }

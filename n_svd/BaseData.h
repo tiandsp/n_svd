@@ -21,8 +21,8 @@ public:
 class N_SVD
 {
 public:
-	N_SVD();
-	~N_SVD();
+	N_SVD(){};
+	~N_SVD(){};
 
 
 	Mat *U;

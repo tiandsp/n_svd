@@ -1,6 +1,8 @@
 #ifndef _MAT_H
 #define _MAT_H
 #include "BaseData.h"
+#include <iostream>
+using namespace std;
 
 class SVD;
 class Mat
@@ -17,6 +19,7 @@ public:
 	Mat &operator=(const Mat &);
 	bool operator==(const Mat &) const;
 	bool operator!=(const Mat &) const;
+	friend ostream& operator<<(ostream&,const Mat&);
 
 	Mat operator~();		//¾ØÕó×ªÖÃ
 	Mat operator+(Mat &);
@@ -43,7 +46,7 @@ public:
 	void setElement(double,long,long);
 	double getElement(long,long);
 	void print();
-
+	Mat repmat(long,long);
 private:
 	void svd(int m, int n, double **a, double **p, double *d, double **q);
 

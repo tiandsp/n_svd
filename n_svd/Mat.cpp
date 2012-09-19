@@ -225,6 +225,19 @@ bool Mat::operator!=(const Mat &M) const
 	return true;
 }
 
+ostream &operator<<(ostream& out,const Mat &M)
+{	
+
+	for (long i=0;i<M.row;i++)
+	{
+		for (long j=0;j<M.col;j++)
+			out<<M.data[i][j]<<"  ";
+		out<<endl;
+	}
+	return out;
+}
+
+
 Mat Mat::operator~()
 {
 	Mat tmp(col,row);
@@ -244,7 +257,7 @@ Mat Mat::operator+(Mat &M)
 {
 	if (row!=M.row || col!=M.col)
 	{
-		cout<<"row or col not match"<<endl;
+		cout<<"row or col not match.operator+ wrong."<<endl;
 		return *this;
 	}
 	
@@ -279,7 +292,7 @@ Mat Mat::operator-(Mat &M)
 {
 	if (row!=M.row || col!=M.col)
 	{
-		cout<<"row or col not match"<<endl;
+		cout<<"row or col not match.operator- wrong"<<endl;
 		return *this;
 	}
 
@@ -313,7 +326,7 @@ Mat Mat::operator*(Mat &M)
 {
 	if (col!=M.row)
 	{
-		cout<<"row or col not match"<<endl;
+		cout<<"row or col not match.operator* wrong"<<endl;
 		return *this;
 	}
 
@@ -350,7 +363,7 @@ Mat Mat::operator/(Mat &M)
 {
 	if (col!=M.row)
 	{
-		cout<<"row or col not match"<<endl;
+		cout<<"row or col not match.operator/ wrong"<<endl;
 		return *this;
 	}
 
@@ -388,7 +401,7 @@ Mat Mat::dotMultiplication(Mat &M)
 	Mat tmp(*this);
 	if (row!=M.row || col!=M.col)
 	{
-		cout<<"row or col not match"<<endl;
+		cout<<"row or col not match.dotMultiplication() wrong."<<endl;
 		return *this;
 	}
 
@@ -407,7 +420,7 @@ Mat Mat::dotDivision(Mat &M)
 	Mat tmp(*this);
 	if (row!=M.row || col!=M.col)
 	{
-		cout<<"row or col not match"<<endl;
+		cout<<"row or col not match.dotDivision() wrong."<<endl;
 		return *this;
 	}
 	
@@ -427,7 +440,7 @@ Mat Mat::inv()
 
 	if (col!=row)
 	{
-		cout<<"col must equal row"<<endl;
+		cout<<"col must equal row,inv() wrong"<<endl;
 		system("pause");
 		return *this;
 	}
@@ -663,7 +676,7 @@ Mat Mat::reshape(long r,long c)
 {
 	if (r*c!=row*col)
 	{
-		cout<<"the size must be equal"<<endl;
+		cout<<"the size must be equal.reshape() wrong"<<endl;
 		system("pause");
 		return *this;
 	}
@@ -773,7 +786,7 @@ void Mat::setElement(double n,long r,long c)
 {
 	if (r<0 || c<0 || r>row || c>col)
 	{
-		cout<<"overflow"<<endl;
+		cout<<"overflow setElement() wrong"<<endl;
 		return;
 	}
 	data[r][c]=n;
@@ -783,7 +796,7 @@ double Mat::getElement(long r,long c)
 {
 	if (r<0 || c<0 || r>row || c>col)
 	{
-		cout<<"overflow"<<endl;
+		cout<<"overflow getElement() wrong"<<endl;
 		return 0;
 	}
 
@@ -1085,5 +1098,28 @@ void Mat::svd(int m, int n, double **a, double **p, double *d, double **q)
 
 }
 
+Mat Mat::repmat(long r,long c)		//ÓĞbug
+{
+	long R;
+	long C;
+	R=r*row;
+	C=c*col;
+	Mat re(R,C);
 
+	for (long i=0;i<R;i+=c)
+	{
+		for (long j=0;j<C;j+=r)
+		{
+			for (long m=0;m<row;m++)
+			{
+				for (long n=0;n<col;n++)
+				{
+					re.setElement(this->getElement(m,n),i+m,j+n);
+				}
+			}
+		}
+	}
+
+	return re;
+}
 

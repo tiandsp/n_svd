@@ -2,6 +2,7 @@
 #define _TENSOR_H
 #include "Mat.h"
 #include "N_SVD.h"
+#include <iostream>
 
 class Mat;
 class N_SVD;
@@ -38,7 +39,9 @@ public:
 	double getElement(long,...);
 
 private:
+	Mat matricize(Tensor,long);
 	Mat tfastsvd();
+
 
 private:
 	long *N;	//每个维数的值
