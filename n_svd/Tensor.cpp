@@ -16,6 +16,7 @@ Tensor::Tensor(long a,...)
 
 	p=&a;
 	N=new long[dim];
+	yuji=new long[dim];
 	long i=0;
 	while(*p!=0)
 	{
@@ -27,6 +28,16 @@ Tensor::Tensor(long a,...)
 
 	data=new double[n];
 	memset(data,0,n*sizeof(double));
+	int tmp;
+	for (int i=0;i<dim;i++)
+	{
+		tmp=1;
+		for (int j=i+1;j<dim;j++)
+		{
+			tmp*=N[j];
+		}
+		yuji[i]=tmp;
+	}
 
 }
 
@@ -35,11 +46,13 @@ Tensor::Tensor(const Tensor &T)
 	dim=T.dim;
 	n=T.n;
 	N=new long[dim];
+	yuji=new long[dim];
 	data=new double[n];
-
+	
 	for (long i=0;i<dim;i++)
 	{
 		N[i]=T.N[i];
+		yuji[i]=T.yuji[i];
 	}
 
 	for (long i=0;i<n;i++)
@@ -52,6 +65,7 @@ Tensor::~Tensor()
 {
 	delete[] data;
 	delete[] N;
+	delete[] yuji;
 }
 
 Tensor &Tensor::operator=(const Tensor &T)
@@ -59,15 +73,18 @@ Tensor &Tensor::operator=(const Tensor &T)
 
 	delete[] data;
 	delete[] N;
+	delete[] yuji;
 
 	n=T.n;
 	dim=T.dim;
 	N=new long[dim];
+	yuji=new long[dim];
 	data=new double[n];
 
 	for (long i=0;i<dim;i++)
 	{
 		N[i]=T.N[i];
+		yuji[i]=T.yuji[i];
 	}
 
 	for (long i=0;i<n;i++)
@@ -267,13 +284,6 @@ Tensor Tensor::operator/(double a)
 	return *this;
 }
 
-N_SVD *Tensor::m_mode_svd()
-{
-	N_SVD *nsvd;
-
-	return nsvd;
-}
-
 Mat Tensor::getSize()
 {
 	Mat tmp(1,dim);
@@ -295,7 +305,7 @@ void Tensor::setElement(double a,long b,...)
 	long *NUM;
 	long *p;
 	p=&b;
-	NUM=new long[n];
+	NUM=new long[dim];
 	while (*p!=0)
 	{
 		num++;
@@ -309,31 +319,63 @@ void Tensor::setElement(double a,long b,...)
 		NUM[num]=*p;
 		p++;
 	}
-	if (num!=n)
+	if (num!=dim)
 	{
 		cout<<"dim must be equal";
 		delete[] NUM;
 		return;
 	}
 
-	for (long i=0;i<n;i++)
+	long index=0;
+	for (long i=0;i<dim;i++)
 	{
-		for (long j=0;j<N[i];j++)
-		{
-
-
-		}
-
+		index+=yuji[i]*NUM[i];
 	}
-
-
-
-
+	delete[] NUM;
+	data[index]=a;
 
 }
 
 double Tensor::getElement(long b,...)
 {
+	long num=0;
+	long *NUM;
+	long *p=&b;
 
-	return 0;
+	while(*p!=0)
+	{
+		num++;
+		p++;
+	}
+
+	if (dim!=num)
+	{
+		cout<<"dim wrong"<<endl;
+		return 0;
+	}
+
+	NUM=new long[num];
+	int i=0;
+	p=&b;
+	while(*p!=0)
+	{
+		NUM[i]=*p;
+		p++;
+		i++;
+	}
+	long index=0;
+	for (int i=0;i<dim;i++)
+	{
+		index+=NUM[i]*yuji[i];
+	}
+
+	delete[] NUM;
+	return data[index];
+}
+
+N_SVD *Tensor::m_mode_svd()
+{
+	N_SVD *nsvd;
+
+	return nsvd;
 }

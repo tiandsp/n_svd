@@ -45,6 +45,7 @@ private:
 	long dim;	//数据的维数
 	double *data;	//每个数据的值
 	long n;	//数据的个数
+	long *yuji;
 };
 
 
