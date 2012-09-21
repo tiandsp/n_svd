@@ -1,9 +1,11 @@
 #ifndef _MAT_H
 #define _MAT_H
 #include "BaseData.h"
+#include "Tensor.h"
 #include <iostream>
 using namespace std;
 
+class Tensor;
 class SVD;
 class Mat
 {
@@ -51,6 +53,8 @@ public:
 	double getElement(long,long);
 	void print();
 	Mat repmat(long,long);
+	Tensor *tensorize(long,Mat);
+
 private:
 	void svd(int m, int n, double **a, double **p, double *d, double **q);
 

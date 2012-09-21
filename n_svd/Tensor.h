@@ -11,6 +11,7 @@ class Tensor
 public:
 	Tensor(long a,...);
 	Tensor(const Tensor &T);
+	Tensor(Mat);
 	~Tensor();
 
 	Tensor &operator=(const Tensor &);
@@ -40,7 +41,7 @@ public:
 	double getElement(long,...);
 
 private:
-	Mat matricize(Tensor,long);
+	Mat matricize(long);
 	Tensor mode_m_prod(Mat,long);
 	Tensor shiftdim(long);
 	Mat reshape(long,long);

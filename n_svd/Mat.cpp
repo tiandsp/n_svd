@@ -1182,3 +1182,12 @@ Mat Mat::tfastsvd()
 
 	return *this;
 }
+
+Tensor *Mat::tensorize(long n,Mat dims)
+{
+	Tensor *re;
+
+
+
+	return re;
+}
