@@ -539,6 +539,23 @@ Tensor Tensor::reshape(Mat M)
 {
 	Tensor tmp(*this);
 
+	if (dim!=M.getSize())
+	{
+		cout<<"reshape wrong"<<endl;
+		return tmp;
+	}
+	long ji=1;
+	for (long i=0;i<dim;i++)
+	{
+		ji*=M.getElement(0,i);
+	}
+	if (ji!=n)
+	{
+		cout<<"reshape wrong"<<endl;
+		return tmp;
+	}
+
+
 
 
 
