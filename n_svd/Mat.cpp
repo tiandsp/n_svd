@@ -709,6 +709,26 @@ Mat Mat::reshape(long r,long c)
 
 }
 
+Tensor *Mat::reshape(Mat ndims)
+{
+	long r=ndims.getRow();
+	long c=ndims.getCol();
+
+	Tensor *re=new Tensor(ndims);
+	long k=0;
+	for (long i=0;i<row;i++)
+	{
+		for (long j=0;j<col;j++)
+		{
+			re->setElement(data[i][j],k);
+		}
+	}
+
+
+	return re;
+}
+
+
 void Mat::svd(SVD *re)
 {
 //	SVD *re;
@@ -1186,8 +1206,37 @@ Mat Mat::tfastsvd()
 Tensor *Mat::tensorize(long n,Mat dims)
 {
 	Tensor *re;
+	Mat ndims;
+	ndims=dims.wshift(n);
+	re=dims.reshape(ndims);
+	long l=ndims.getSize();
 
 
 
 	return re;
+}
+
+void Mat::reverse(Mat &str,long start,long end)
+{
+	double tmp;
+	while (start<end)
+	{
+		tmp=str.getElement(0,start);
+		str.setElement(str.getElement(0,end),0,start);
+		str.setElement(tmp,0,end);
+		start++;
+		end--;
+	}
+}
+
+Mat Mat::wshift(long n)
+{
+	Mat dims(*this);
+	long r=dims.getRow();
+	long c=dims.getCol();
+
+	reverse(dims,0,n-1);
+	reverse(dims,n,c-1);
+	reverse(dims,0,c-1);
+	return dims;
 }

@@ -46,6 +46,7 @@ public:
 	Mat sqrtM();
 	Mat mean(int n);
 	Mat reshape(long,long);
+	Tensor *reshape(Mat);
 	long prod();
 	long prod(long,long);
 
@@ -55,8 +56,12 @@ public:
 	Mat repmat(long,long);
 	Tensor *tensorize(long,Mat);
 
+	Mat wshift(long);
+
+
 private:
 	void svd(int m, int n, double **a, double **p, double *d, double **q);
+	void reverse(Mat&,long,long);
 
 private:
 	double **data;

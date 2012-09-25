@@ -355,6 +355,14 @@ void Tensor::setElement(double a,long b,...)
 		NUM[num]=*p;
 		p++;
 	}
+
+	if (num==1)
+	{
+		data[b]=a;
+		delete[] NUM;
+		return;
+	}
+
 	if (num!=dim)
 	{
 		cout<<"dim must be equal";
@@ -372,6 +380,34 @@ void Tensor::setElement(double a,long b,...)
 
 }
 
+void Tensor::setElement(double a,Mat M)
+{
+	long num=0;
+	num=M.getSize();
+	if (num!=dim)
+	{
+		cout<<"dim must be equal";
+		return;
+	}
+
+	for (long i=0;i<num;i++)
+	{
+		if (M.getElement(0,i)>N[i])
+		{
+			cout<<"setDlement wrong";
+			return;
+		}
+	}
+
+	long index=0;
+	for (long i=0;i<dim;i++)
+	{
+		index+=yuji[i]*M.getElement(0,i);
+	}
+	data[index]=a;
+
+}
+
 double Tensor::getElement(long b,...)
 {
 	long num=0;
@@ -382,6 +418,11 @@ double Tensor::getElement(long b,...)
 	{
 		num++;
 		p++;
+	}
+
+	if (num==1)
+	{
+		return data[b];
 	}
 
 	if (dim!=num)
@@ -408,6 +449,35 @@ double Tensor::getElement(long b,...)
 	delete[] NUM;
 	return data[index];
 }
+
+double Tensor::getElement(Mat M)
+{
+	long num=0;
+	num=M.getSize();
+
+	if (dim!=num)
+	{
+		cout<<"dim wrong"<<endl;
+		return 0;
+	}
+
+	for (long i=0;i<num;i++)
+	{
+		if (M.getElement(0,i)>N[i])
+		{
+			cout<<"setDlement wrong";
+			return 0;
+		}
+	}
+
+	long index=0;
+	for (int i=0;i<dim;i++)
+	{
+		index+=M.getElement(0,i)*yuji[i];
+	}
+	return data[index];
+}
+
 
 N_SVD *Tensor::m_mode_svd()
 {
@@ -463,6 +533,16 @@ Mat Tensor::reshape(long r,long c)
 		}
 	}
 	return re;
+}
+
+Tensor Tensor::reshape(Mat M)
+{
+	Tensor tmp(*this);
+
+
+
+
+	return tmp;
 }
 
 Mat Tensor::matricize(long i)
