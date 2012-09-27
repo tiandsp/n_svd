@@ -4,14 +4,12 @@
 #include <iostream>
 #include <cmath>
 #include <stdlib.h>
-
+using namespace std;
 //svd function
 #define SIGN(u, v)     ( (v)>=0.0 ? fabs(u) : -fabs(u) )
 #define MAX(x, y)     ( (x) >= (y) ? (x) : (y) )  
 
-using namespace std;
-
-Mat::Mat(long r,long c)
+void Mat::create(long r,long c)
 {
 	row=r;
 	col=c;
@@ -42,57 +40,7 @@ Mat::Mat(long r,long c)
 
 }
 
-Mat::Mat(const Mat &M)
-{
-	row=M.row;
-	col=M.col;
-	size=M.size;
-	data=new double *[row];
-	for(long i=0;i<row;i++)
-	{
-		data[i]=new double[col];
-	}
-
-	for (long i=0;i<row;i++)
-	{
-		for(long j=0;j<col;j++)
-			data[i][j]=M.data[i][j];
-	}
-
-	u=new double *[row];
-	for (long i=0;i<row;i++)
-	{
-		u[i]=new double[row];
-	}
-	for (long i=0;i<row;i++)
-	{
-		for (long j=0;j<row;j++)
-		{
-			u[i][j]=M.u[i][j];
-		}
-	}
-
-	s=new double[col];
-	for (long i=0;i<col;i++)
-	{
-		s[i]=M.s[i];
-	}
-	
-	v=new double *[col];
-	for (long i=0;i<col;i++)
-	{
-		v[i]=new double[col];
-	}
-	for (long i=0;i<col;i++)
-	{
-		for (long j=0;j<col;j++)
-		{
-			v[i][j]=M.v[i][j];
-		}
-	}
-}
-
-Mat::~Mat()
+void Mat::clear()
 {
 	for (long i=0;i<row;i++)
 	{
@@ -109,7 +57,37 @@ Mat::~Mat()
 		delete[] v[i];
 	}
 	delete v;
+}
 
+Mat::Mat(long r,long c)
+{
+	create(r,c);
+}
+
+Mat::Mat(const Mat &M)
+{
+	create(M.row,M.col);
+
+	for (long i=0;i<row;i++)
+		for(long j=0;j<col;j++)
+			data[i][j]=M.data[i][j];
+
+	for (long i=0;i<row;i++)
+		for (long j=0;j<row;j++)
+			u[i][j]=M.u[i][j];
+
+	for (long i=0;i<col;i++)
+		s[i]=M.s[i];
+	
+	for (long i=0;i<col;i++)
+		for (long j=0;j<col;j++)
+			v[i][j]=M.v[i][j];
+
+}
+
+Mat::~Mat()
+{
+	clear();
 }
 
 long Mat::getRow() const
@@ -129,68 +107,23 @@ long Mat::getSize() const
 
 Mat &Mat::operator=(const Mat &M)
 {
-	for (long i=0;i<row;i++)
-	{
-		delete[] data[i];
-		delete[] u[i];
-	}
-	delete[] data;
-	delete[] u;
-
-	delete[] s;
-
-	for (long i=0;i<col;i++)
-	{
-		delete[] v[i];
-	}
-	delete v;
-
-	row=M.row;
-	col=M.col;
-	size=M.size;
-	data=new double *[row];
-	for(long i=0;i<row;i++)
-	{
-		data[i]=new double[col];
-	}
+	clear();
+	create(M.row,M.col);
 
 	for (long i=0;i<row;i++)
-	{
 		for(long j=0;j<col;j++)
 			data[i][j]=M.data[i][j];
-	}
 
-	u=new double *[row];
 	for (long i=0;i<row;i++)
-	{
-		u[i]=new double[row];
-	}
-	for (long i=0;i<row;i++)
-	{
 		for (long j=0;j<row;j++)
-		{
 			u[i][j]=M.u[i][j];
-		}
-	}
 
-	s=new double[col];
 	for (long i=0;i<col;i++)
-	{
 		s[i]=M.s[i];
-	}
 
-	v=new double *[col];
 	for (long i=0;i<col;i++)
-	{
-		v[i]=new double[col];
-	}
-	for (long i=0;i<col;i++)
-	{
 		for (long j=0;j<col;j++)
-		{
 			v[i][j]=M.v[i][j];
-		}
-	}
 
 	return *this;
 }
@@ -236,7 +169,6 @@ ostream &operator<<(ostream& out,const Mat &M)
 	}
 	return out;
 }
-
 
 Mat Mat::operator~()
 {
@@ -395,6 +327,15 @@ Mat Mat::operator/(double a)
 	return tmp;
 }
 
+void Mat::eye(long n)
+{
+	clear();
+	create(n,n);
+	for (long i=0;i<row;i++)
+		for(long j=0;j<col;j++)
+			if (i==j)
+				data[i][j]=1;
+}
 
 Mat Mat::dotMultiplication(Mat &M)
 {
@@ -1173,6 +1114,101 @@ long Mat::prod(long r,long c)
 		}
 	}
 	return re;
+}
+
+double Mat::norm()
+{
+	double tmp=0;
+	for (long i=0;i<row;i++)
+	{
+		for (long j=0;j<col;j++)
+		{
+			tmp+=data[i][j]*data[i][j];
+		}
+	}
+
+	return sqrtl(tmp);
+}
+
+
+double Mat::det()		//使用LU分解求行列式 注：1到n-1阶子式不能为0.
+{
+	if (row!=col)
+	{
+		cout<<"row must eq col.det wrong."<<endl;
+		return 0;
+	}
+
+	Mat a(*this);
+
+	double *L;
+	double *U;
+	double tmp=0;
+
+	long n=getSize();
+	long s=getCol();
+
+	L=new double[n];
+	U=new double[n];
+
+	for (int i = 0; i < s; i++)
+	{
+		for (int j = 0; j < s; j++)
+		{
+			if (i == j)
+				L[i*s+j] = 1;
+			if (i < j)
+				L[i*s+j] = 0;
+			if (i > j)
+				U[i*s+j] = 0;
+
+			U[0*s+j] = a.data[0][j];
+			L[i*s+0] = a.data[i][0] / U[0*s+0];
+		}
+	}
+
+	for (int k = 1; k < s; k++)
+	{
+
+		for (int j = k; j < s; j++)
+		{
+			tmp = 0;
+			for (int m = 0; m < k; m++)
+			{
+				tmp += L[k*s+m] * U[m*s+j];
+			}
+
+			U[k*s+j] = a.data[k][j] - tmp;
+		}
+
+		for (int i = k+1; i < s; i++)
+		{
+			tmp = 0;
+			for (int m = 0; m < k; m++)
+			{
+				tmp += L[i*s+m] * U[m*s+k];
+			}
+
+			L[i*s+k] = ( a.data[i][k] - tmp ) / U[k*s+k];
+		}
+	}
+
+	tmp=1;
+	for (long i=0;i<s;i++)
+	{
+		for (long j=0;j<s;j++)
+		{
+			if (i==j)
+			{
+				tmp*=L[i*s+j]*U[i*s+j];
+			}
+		}
+	}
+
+	delete[] L;
+	delete[] U;
+	return tmp;
+
 }
 
 
