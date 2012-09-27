@@ -4,24 +4,18 @@
 using namespace std;
 int main()
 {
-
+	double in[] = {
+		 12, -51,   4 ,
+		  6, 167, -68 ,
+		 -4,  24, -41 ,
+	};
 
 	int r=3;
 	int c=3;
 
 	Mat m(r,c);
 	
-	m.setElement(3,0,0);
-	m.setElement(2,0,1);
-	m.setElement(-2,0,2);
-	
-	m.setElement(1,1,0);
-	m.setElement(1,1,1);
-	m.setElement(-3,1,2);
-
-	m.setElement(-2,2,0);
-	m.setElement(-3,2,1);
-	m.setElement(11,2,2);
+	m.MatCopy(in,r,c);
 
 
 	cout<<m<<endl;
@@ -32,6 +26,11 @@ int main()
 	s.eye(5);
 	s=m;
 	s.print();
+
+	string str="e://data.txt";
+	s.ReadFileData(str);
+	s.print();
+	
 
 	system("pause");
 	return 0;

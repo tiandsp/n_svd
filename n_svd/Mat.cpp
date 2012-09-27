@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cmath>
 #include <stdlib.h>
+#include <fstream>
+#include <vector>
 using namespace std;
 //svd function
 #define SIGN(u, v)     ( (v)>=0.0 ? fabs(u) : -fabs(u) )
@@ -331,10 +333,8 @@ void Mat::eye(long n)
 {
 	clear();
 	create(n,n);
-	for (long i=0;i<row;i++)
-		for(long j=0;j<col;j++)
-			if (i==j)
-				data[i][j]=1;
+	for (long i=0;i<n;i++)
+			data[i][i]=1;
 }
 
 Mat Mat::dotMultiplication(Mat &M)
@@ -762,6 +762,56 @@ double Mat::getElement(long r,long c)
 	}
 
 	return data[r][c];
+}
+
+void Mat::MatCopy(double* a,long r,long c)
+{
+	clear();
+	create(r,c);
+	for (long i=0;i<r;i++)
+	{
+		for (long j=0;j<c;j++)
+		{
+			data[i][j]=a[i*c+j];
+		}
+	}
+
+}
+
+void Mat::ReadFileData(string filename)
+{
+	ifstream fin;
+	fin.open(filename.c_str(),ios::in);
+	clear();
+	vector<double> num;
+	long r=0;
+	long c=0;
+	long n=0;
+	double tmp;
+	while(!fin.eof())
+	{
+		fin>>tmp;
+		num.push_back(tmp);
+
+		if (fin.get()=='\n')
+			r++;
+		n++;
+
+	}
+	c=n/r;
+	create(r,c);
+
+	vector<double>::iterator pit;
+	pit=num.begin();
+	for (long i=0;i<r;i++)
+	{
+		for (long j=0;j<c;j++)
+		{
+			data[i][j]=*pit;
+			pit++;
+		}
+	}
+	fin.close();
 }
 
 void Mat::print()
@@ -1195,15 +1245,8 @@ double Mat::det()		//使用LU分解求行列式 注：1到n-1阶子式不能为0.
 
 	tmp=1;
 	for (long i=0;i<s;i++)
-	{
-		for (long j=0;j<s;j++)
-		{
-			if (i==j)
-			{
-				tmp*=L[i*s+j]*U[i*s+j];
-			}
-		}
-	}
+		tmp*=L[i*s+i]*U[i*s+i];
+
 
 	delete[] L;
 	delete[] U;

@@ -3,6 +3,7 @@
 #include "BaseData.h"
 #include "Tensor.h"
 #include <iostream>
+#include <string>
 using namespace std;
 
 class Tensor;
@@ -56,6 +57,9 @@ public:
 
 	void setElement(double,long,long);
 	double getElement(long,long);
+	void MatCopy(double*,long,long);	//从一个数组中拷贝数据到Mat中
+	void ReadFileData(string);			//从文件中读取数据到Mat中
+
 	void print();				//输出矩阵的元素
 	Mat repmat(long,long);		//把矩阵元素周期扩展
 	Tensor *tensorize(long,Mat);
