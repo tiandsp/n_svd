@@ -42,13 +42,14 @@ public:
 
 	double getElement(long,...);
 	double getElement(Mat);
-
+	Tensor *shiftdim(long);
+	Tensor *reshape(Mat);
 private:
 	Mat matricize(long);
 	Tensor mode_m_prod(Mat,long);
-	Tensor shiftdim(long);
+
 	Mat reshape(long,long);
-	Tensor reshape(Mat);
+
 
 private:
 	long *N;	//每个维数的值

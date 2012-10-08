@@ -101,6 +101,10 @@ Tensor::~Tensor()
 
 Tensor &Tensor::operator=(const Tensor &T)
 {
+	if (this==&T)
+	{
+		return *this;
+	}
 
 	delete[] data;
 	delete[] N;
@@ -489,10 +493,11 @@ N_SVD *Tensor::m_mode_svd()
 
 	Tensor cdata(*this);
 	long modes=d.getSize();
-	nsvd->U=new Mat[modes];
+	nsvd->U=new Mat*[modes];
 
 	for (long i=0;i<modes;i++)
 	{
+
 		M=cdata.matricize(i);
 		long r=M.getRow();
 		long c=M.getCol();
@@ -500,7 +505,9 @@ N_SVD *Tensor::m_mode_svd()
 		tmp=M.mean(2);
 		tmp=tmp.repmat(1,c);
 		M=M-tmp;
+		
 
+		nsvd->U[i]=new Mat;
 		nsvd->U[i]=M.tfastsvd();
 	
 		cdata=cdata.mode_m_prod(M,i);
@@ -511,12 +518,12 @@ N_SVD *Tensor::m_mode_svd()
 	return nsvd;
 }
 
-Tensor Tensor::shiftdim(long i)
+Tensor *Tensor::shiftdim(long i)
 {
 
 
 
-	return *this;
+	return this;
 }
 
 Mat Tensor::reshape(long r,long c)
@@ -535,9 +542,10 @@ Mat Tensor::reshape(long r,long c)
 	return re;
 }
 
-Tensor Tensor::reshape(Mat M)
+Tensor *Tensor::reshape(Mat M)
 {
-	Tensor tmp(*this);
+	Tensor *tmp;
+	tmp=new Tensor(*this);
 
 	if (dim!=M.getSize())
 	{
@@ -565,14 +573,16 @@ Tensor Tensor::reshape(Mat M)
 Mat Tensor::matricize(long i)
 {
 	Mat M;
-	Tensor cdata(*this);
-	Mat s=cdata.getSize();
-	long ss=cdata.getSize(i);
+	Tensor *cdata;
+	cdata=new Tensor(*this);
+	Mat s=cdata->getSize();
+	long ss=cdata->getSize(i);
 	long dim=s.prod();
 
-	cdata=cdata.shiftdim(i);
+	cdata=cdata->shiftdim(i);
 
-	M=cdata.reshape(ss,dim/ss);
+	M=cdata->reshape(ss,dim/ss);
+	delete cdata;
 	return M;
 }
 

@@ -25,7 +25,7 @@ public:
 	~N_SVD(){};
 
 
-	Mat *U;
+	Mat **U;
 	Tensor *core;
 
 };

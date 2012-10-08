@@ -11,7 +11,7 @@ using namespace std;
 #define SIGN(u, v)     ( (v)>=0.0 ? fabs(u) : -fabs(u) )
 #define MAX(x, y)     ( (x) >= (y) ? (x) : (y) )  
 
-void Mat::create(long r,long c)
+void Mat::create(const long &r,const long &c)
 {
 	row=r;
 	col=c;
@@ -109,6 +109,10 @@ long Mat::getSize() const
 
 Mat &Mat::operator=(const Mat &M)
 {
+	if (this==&M)
+	{
+		return *this;
+	}
 	clear();
 	create(M.row,M.col);
 
@@ -207,7 +211,7 @@ Mat Mat::operator+(Mat &M)
 	return tmp;
 }
 
-Mat Mat::operator+(double a)
+Mat Mat::operator+(const double &a)
 {
 	Mat tmp(row,col);
 
@@ -242,7 +246,7 @@ Mat Mat::operator-(Mat &M)
 	return tmp;
 }
 
-Mat Mat::operator-(double a)
+Mat Mat::operator-(const double &a)
 {
 	Mat tmp(row,col);
 
@@ -279,7 +283,7 @@ Mat Mat::operator*(Mat &M)
 	return tmp;
 }
 
-Mat Mat::operator*(double a)
+Mat Mat::operator*(const double &a)
 {
 	Mat tmp(row,col);
 
@@ -308,7 +312,7 @@ Mat Mat::operator/(Mat &M)
 	return tmp;
 }
 
-Mat Mat::operator/(double a)
+Mat Mat::operator/(const double &a)
 {
 	if (a==0)
 	{
@@ -329,7 +333,7 @@ Mat Mat::operator/(double a)
 	return tmp;
 }
 
-void Mat::eye(long n)
+void Mat::eye(const long &n)
 {
 	clear();
 	create(n,n);
@@ -337,7 +341,7 @@ void Mat::eye(long n)
 			data[i][i]=1;
 }
 
-Mat Mat::dotMultiplication(Mat &M)
+Mat Mat::dotMultiplication(const Mat &M)
 {
 	Mat tmp(*this);
 	if (row!=M.row || col!=M.col)
@@ -555,7 +559,7 @@ Mat Mat::sqrtM()
 	return tmp;
 }
 
-Mat Mat::mean(int n)
+Mat Mat::mean(const int &n)
 {
 	
 	if (n==1)
@@ -613,7 +617,7 @@ Mat Mat::mean(int n)
 
 }
 
-Mat Mat::reshape(long r,long c)
+Mat Mat::reshape(const long &r,const long &c)
 {
 	if (r*c!=row*col)
 	{
@@ -743,7 +747,7 @@ void Mat::svd(SVD *re)
 
 }
 
-void Mat::setElement(double n,long r,long c)
+void Mat::setElement(const double &n,const long &r,const long &c)
 {
 	if (r<0 || c<0 || r>row || c>col)
 	{
@@ -753,7 +757,7 @@ void Mat::setElement(double n,long r,long c)
 	data[r][c]=n;
 }
 
-double Mat::getElement(long r,long c)
+double Mat::getElement(const long &r,const long &c)
 {
 	if (r<0 || c<0 || r>row || c>col)
 	{
@@ -764,7 +768,7 @@ double Mat::getElement(long r,long c)
 	return data[r][c];
 }
 
-void Mat::MatCopy(double* a,long r,long c)
+void Mat::MatCopy(const double* a,const long &r,const long &c)
 {
 	clear();
 	create(r,c);
@@ -778,7 +782,7 @@ void Mat::MatCopy(double* a,long r,long c)
 
 }
 
-void Mat::ReadFileData(string filename)
+void Mat::ReadFileData(const string &filename)
 {
 	ifstream fin;
 	fin.open(filename.c_str(),ios::in);
@@ -1109,7 +1113,7 @@ void Mat::svd(int m, int n, double **a, double **p, double *d, double **q)
 
 }
 
-Mat Mat::repmat(long r,long c)		
+Mat Mat::repmat(const long &r,const long &c)		
 {
 	if (r<=0 || c<=0)
 	{
@@ -1150,7 +1154,7 @@ long Mat::prod()
 	return re;
 }
 
-long Mat::prod(long r,long c)
+long Mat::prod(const long &r,const long &c)
 {
 	long re=1;
 	for (long i=0;i<row;i++)
@@ -1255,10 +1259,19 @@ double Mat::det()		//使用LU分解求行列式 注：1到n-1阶子式不能为0.
 }
 
 
-Mat Mat::tfastsvd()
+Mat *Mat::tfastsvd()
 {
 	long r=row;
 	long c=col;
+	SVD *re;
+	re=new SVD;
+	re->s=new Mat;
+	re->u=new Mat;
+	re->v=new Mat;
+
+	Mat M(*this);
+	Mat M2;
+
 
 	if (r==1)
 	{
@@ -1278,21 +1291,37 @@ Mat Mat::tfastsvd()
 
 	}
 
+	Mat tmp();
 
-	return *this;
+	return re->u;
 }
 
-Tensor *Mat::tensorize(long n,Mat dims)
+Tensor *Mat::tensorize(const long &n,Mat dims)
 {
-	Tensor *re;
+	Tensor *Tn;
+	Tn=new Tensor(dims);
 	Mat ndims;
 	ndims=dims.wshift(n);
-	re=dims.reshape(ndims);
+	Tn=dims.reshape(ndims);
 	long l=ndims.getSize();
+	Tn=Tn->shiftdim(l-n);
 
+	if (ndims.getSize()!=Tn->getDim())
+	{
+		if (dims.getElement(0,dims.getSize())!=1)
+		{
+			for (long i=0;i<dims.getSize();i++)
+			{
+				if (i==n-1)
+					dims.setElement(1,0,i);
+			}
 
+			Tn=Tn->reshape(dims);
+		}
 
-	return re;
+	}
+
+	return Tn;
 }
 
 void Mat::reverse(Mat &str,long start,long end)
@@ -1308,7 +1337,7 @@ void Mat::reverse(Mat &str,long start,long end)
 	}
 }
 
-Mat Mat::wshift(long n)
+Mat Mat::wshift(const long &n)
 {
 	Mat dims(*this);
 	long r=dims.getRow();
